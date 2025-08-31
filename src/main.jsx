@@ -9,6 +9,7 @@ import { Toaster } from './components/ui/sonner.jsx'
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import Viewtrip from './view-trip/[tripId]/index.jsx'
 import MyTrips from './my-trips/index.jsx'
+import { Analytics } from '@vercel/analytics/react'
 
 const router = createBrowserRouter([{
   path: '/',
@@ -35,6 +36,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <Header />
       <Toaster/>
       <RouterProvider router={router}/>
+      <Analytics />
     </GoogleOAuthProvider>
   </React.StrictMode>,
 )

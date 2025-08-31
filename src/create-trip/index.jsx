@@ -15,22 +15,19 @@ import { FcGoogle } from "react-icons/fc";
 import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 import { doc, setDoc } from "firebase/firestore";
-import { app, db } from '@/service/firebaseConfig';
+import { db } from '@/service/firebaseConfig';
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useNavigate } from 'react-router-dom';
 
 function CreateTrip() {
   const [place, setPlace] = useState();
-  const [formData, setFormData] = useState([]);
-
+  const [formData, setFormData] = useState({});
   const [openDialog, setOpenDialog] = useState(false);
-
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
   const handleInputChange = (name, value) => {
-
     setFormData({
       ...formData,
       [name]: value
@@ -42,14 +39,13 @@ function CreateTrip() {
   }, [formData])
 
   const onGenerateTrip = async () => {
-
     const user = localStorage.getItem('user');
     if (!user) {
       setOpenDialog(true)
       return;
     }
 
-    if (formData?.noOfDAys > 5 && !formData?.location || !formData?.budget || !formData.traveler) {
+    if (!formData?.location || !formData?.noOfDays || !formData?.budget || !formData.traveler) {
       toast('Please fill all the details')
       return;
     }
@@ -61,13 +57,8 @@ function CreateTrip() {
       .replace('{totalDays}', formData?.noOfDays)
       .replace('{traveler}', formData?.traveler)
       .replace('{budget}', formData?.budget)
-      .replace('{budget}', formData?.budget)
-      .replace('{totalDays}', formData?.noOfDays)
-
-    // console.log(FINAL_PROMPT)
 
     const result = await chatSession.sendMessage(FINAL_PROMPT);
-    console.log(result?.response?.text());
     setLoading(false)
     SaveAiTrip(result?.response?.text())
   }
@@ -76,7 +67,6 @@ function CreateTrip() {
     setLoading(true)
     const user = JSON.parse(localStorage.getItem('user'))
     const docId = Date.now().toString();
-    // Add a new document in collection "AITrips"
     await setDoc(doc(db, "AITrips", docId), {
       userSelection: formData,
       tripData: JSON.parse(TripData),
@@ -99,7 +89,6 @@ function CreateTrip() {
         Accept: 'application/json',
       },
     }).then((resp) => {
-      console.log(resp);
       localStorage.setItem('user', JSON.stringify(resp.data));
       setOpenDialog(false);
       onGenerateTrip();
@@ -108,85 +97,172 @@ function CreateTrip() {
     });
   }
 
-
   return (
-    <div className='sm:px-10 md:px-32 lg:px-56 px-5 mt-10'>
-      <h2 className='font-bold text-3xl'>Tell us your travel preferences🏕️🌴</h2>
-      <p className='mt-3 text-gray-500 text-xl'>Just provide some basic information, and our trip planner will generate a customized itinerary based on your preferences.</p>
+    <div className="sm:px-10 md:px-32 lg:px-56 px-5 py-20 bg-background text-foreground transition-colors">
+      {/* Heading */}
+      <div className="text-center space-y-4 max-w-3xl mx-auto">
+        <h2 className="font-extrabold text-3xl md:text-5xl text-neutral-900 dark:text-neutral-100">
+          Tell us your travel preferences
+        </h2>
+        <p className="text-lg md:text-xl text-gray-600 dark:text-neutral-300">
+          Just provide some basic information, and our trip planner will generate 
+          a customized itinerary tailored to your preferences.
+        </p>
+      </div>
 
-      <div className='mt-20 flex flex-col gap-10'>
+      
+
+      {/* Form */}
+      <div className="mt-16 flex flex-col gap-12 max-w-4xl mx-auto">
+        
+        {/* Location */}
+<div>
+  <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
+     What is your destination of choice?
+  </h3>
+  <GooglePlacesAutocomplete
+    apiKey={import.meta.env.VITE_GOOGLE_PLACE_API_KEY}
+    selectProps={{
+      value: place,
+      onChange: (v) => { 
+        setPlace(v); 
+        handleInputChange('location', v); 
+      },
+      placeholder: "Search for a city, landmark, or destination...",
+      styles: {
+        control: (provided, state) => ({
+          ...provided,
+          backgroundColor: state.isFocused 
+            ? (document.documentElement.classList.contains("dark") ? "#111827" : "#f9fafb") 
+            : (document.documentElement.classList.contains("dark") ? "#1f2937" : "#ffffff"),
+          borderRadius: "0.75rem",
+          border: state.isFocused ? "2px solid #2563eb" : "1px solid #d1d5db",
+          boxShadow: "none",
+          padding: "6px 8px",
+          transition: "all 0.2s ease",
+          cursor: "text"
+        }),
+        input: (provided) => ({
+          ...provided,
+          color: document.documentElement.classList.contains("dark") ? "#f9fafb" : "#111827",
+          fontSize: "1rem",
+        }),
+        singleValue: (provided) => ({
+          ...provided,
+          color: document.documentElement.classList.contains("dark") ? "#f9fafb" : "#111827",
+        }),
+        menu: (provided) => ({
+          ...provided,
+          backgroundColor: document.documentElement.classList.contains("dark") ? "#1f2937" : "#ffffff",
+          borderRadius: "0.75rem",
+          marginTop: "6px",
+          padding: "6px",
+          boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+          zIndex: 50,
+        }),
+        option: (provided, state) => ({
+          ...provided,
+          backgroundColor: state.isFocused 
+            ? (document.documentElement.classList.contains("dark") ? "#2563eb" : "#e5f0ff")
+            : "transparent",
+          color: state.isFocused 
+            ? "#ffffff" 
+            : (document.documentElement.classList.contains("dark") ? "#d1d5db" : "#374151"),
+          padding: "10px",
+          borderRadius: "0.5rem",
+          cursor: "pointer",
+        }),
+        placeholder: (provided) => ({
+          ...provided,
+          color: document.documentElement.classList.contains("dark") ? "#9ca3af" : "#6b7280",
+        }),
+      },
+    }}
+  />
+</div>
+
+
+        {/* Days */}
         <div>
-          <h2 className='text-xl my-3 font-medium'>What is destination of choice?</h2>
-          <GooglePlacesAutocomplete
-            apiKey={import.meta.env.VITE_GOOGLE_PLACE_API_KEY}
-            selectProps={{
-              place,
-              onChange: (v) => { setPlace(v); handleInputChange('location', v) }
-            }}
+          <h3 className="text-xl font-semibold mb-4">How many days are you planning your trip?</h3>
+          <Input 
+            placeholder="Ex. 4" 
+            type="number" 
+            className="rounded-lg border px-4 py-2"
+            onChange={(e) => handleInputChange('noOfDays', e.target.value)} 
           />
         </div>
 
+        {/* Budget */}
         <div>
-          <h2 className='text-xl my-3 font-medium'>How many days are you planning your trip?</h2>
-          <Input placeholder={'Ex.4'} type='number' onChange={(e) => handleInputChange('noOfDays', e.target.value)} />
-        </div>
-
-
-        <div>
-          <h2 className='text-xl my-3 font-medium'>What is Your Budget?</h2>
-          <div className='grid grid-cols-3 gap-5 mt-5'>
+          <h3 className="text-xl font-semibold mb-4">What is your budget?</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {SelectBudgetOptions.map((item, index) => (
-              <div key={index}
+              <div 
+                key={index}
                 onClick={() => handleInputChange('budget', item.title)}
-                className={`p-4 border cursor-pointer rounded-lg hover:shadow-lg ${formData?.budget == item.title && 'shadow-lg border-black'}`}>
-                <h2 className='text-4xl'>{item.icon}</h2>
-                <h2 className='font-bold text-lg'>{item.title}</h2>
-                <h2 className='text-sm text-gray-500'>{item.desc}</h2>
+                className={`p-6 rounded-lg border bg-white dark:bg-neutral-900 shadow-sm hover:shadow-md cursor-pointer transition-all 
+                ${formData?.budget === item.title && 'border-blue-500 shadow-lg'}`}
+              >
+                <h2 className="text-4xl">{item.icon}</h2>
+                <h2 className="font-bold text-lg mt-2">{item.title}</h2>
+                <p className="text-sm text-gray-500 dark:text-neutral-400">{item.desc}</p>
               </div>
             ))}
           </div>
         </div>
 
+        {/* Travelers */}
         <div>
-          <h2 className='text-xl my-3 font-medium'>Who do you plan on traveling with on your next adventure?</h2>
-          <div className='grid grid-cols-3 gap-5 mt-5'>
+          <h3 className="text-xl font-semibold mb-4">Who are you traveling with?</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {SelectTravelList.map((item, index) => (
-              <div key={index}
+              <div 
+                key={index}
                 onClick={() => handleInputChange('traveler', item.people)}
-                className={`p-4 border cursor-pointer rounded-lg hover:shadow-lg ${formData?.traveler == item.people && 'shadow-lg border-black'}`}>
-                <h2 className='text-4xl'>{item.icon}</h2>
-                <h2 className='font-bold text-lg'>{item.title}</h2>
-                <h2 className='text-sm text-gray-500'>{item.desc}</h2>
+                className={`p-6 rounded-lg border bg-white dark:bg-neutral-900 shadow-sm hover:shadow-md cursor-pointer transition-all 
+                ${formData?.traveler === item.people && 'border-blue-500 shadow-lg'}`}
+              >
+                <h2 className="text-4xl">{item.icon}</h2>
+                <h2 className="font-bold text-lg mt-2">{item.title}</h2>
+                <p className="text-sm text-gray-500 dark:text-neutral-400">{item.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      <div className='my-10 justify-end flex'>
-        <Button disabled={loading} onClick={onGenerateTrip}>
-          {loading ? <AiOutlineLoading3Quarters className='h-7 w-7 animate-spin' /> : 'Generate Trip'}
+      {/* Generate Button */}
+      <div className="mt-16 flex justify-center">
+        <Button 
+          disabled={loading} 
+          onClick={onGenerateTrip}
+          className="px-8 py-4 text-lg rounded-xl shadow-md hover:shadow-lg transition-all"
+        >
+          {loading 
+            ? <AiOutlineLoading3Quarters className="h-6 w-6 animate-spin" /> 
+            : 'Generate Trip'}
         </Button>
       </div>
 
+      {/* Login Dialog */}
       <Dialog open={openDialog}>
-        <DialogContent>
+        <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogDescription>
-              <img src="/logo.svg" alt="logo" width="100px" className='items-center' />
-              <h2 className='font-bold text-lg'>Sign In to check out your travel plan</h2>
-              <p>Sign in to the App with Google authentication securely</p>
+            <DialogDescription className="space-y-4 text-center">
+              <img src="/logo.png" alt="logo" width="80" className="mx-auto" />
+              <h2 className="font-bold text-xl">Sign in to see your travel plan</h2>
+              <p className="text-gray-500">Use Google authentication to securely sign in</p>
               <Button
                 onClick={login}
-                className="w-full mt-6 flex gap-4 items-center">
-                <FcGoogle className="h-7 w-7" />Sign in With Google
+                className="w-full mt-6 flex gap-3 items-center justify-center"
+              >
+                <FcGoogle className="h-6 w-6" /> Sign in with Google
               </Button>
             </DialogDescription>
           </DialogHeader>
         </DialogContent>
       </Dialog>
-
-
     </div>
   )
 }

@@ -1,54 +1,72 @@
 import { db } from '@/service/firebaseConfig';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc } from 'firebase/firestore';
 import { toast } from 'sonner';
 import InfoSection from '../components/InfoSection';
 import Hotels from '../components/Hotels';
 import PlacesToVisit from '../components/PlacesToVisit';
 import Footer from '../components/Footer';
+import DownloadPDF from '../components/DownloadPdf';
 
 function Viewtrip() {
-    const { tripId } = useParams();
-    const [trip, setTrip] = useState([])
+  const { tripId } = useParams();
+  const [trip, setTrip] = useState(null);
 
-    useEffect(() => {
-        tripId && GetTripData()
-    }, [tripId])
+  useEffect(() => {
+    if (tripId) GetTripData();
+  }, [tripId]);
 
-    // used to get trip info from firebase
-    const GetTripData = async () => {
-        const docRef = doc(db, 'AITrips', tripId);
-        const docSnap = await getDoc(docRef)
+  // fetch trip info from firebase
+  const GetTripData = async () => {
+    const docRef = doc(db, 'AITrips', tripId);
+    const docSnap = await getDoc(docRef);
 
-        if (docSnap.exists()) {
-            console.log("Document: ", docSnap.data())
-            setTrip(docSnap.data());
-        }
-
-        else {
-            console.log("No such document")
-            toast("No trip found")
-        }
-
+    if (docSnap.exists()) {
+      setTrip(docSnap.data());
+    } else {
+      toast.error('No trip found');
     }
+  };
 
+  if (!trip) {
     return (
-        <div className='p-10 md:px-20 lg:px-44 xl:px-56'>
-            {/* Information Section */}
-            <InfoSection trip={trip} />
+      <div className="flex justify-center items-center h-screen text-gray-600 dark:text-gray-300">
+        Loading trip details...
+      </div>
+    );
+  }
 
-            {/* Recommended Hotels */}
-            <Hotels trip={trip} />
+  return (
+    <div className="px-5 sm:px-10 md:px-16 lg:px-28 xl:px-40 py-12 space-y-16">
+      {/* Trip Overview / Hero */}
+      <section>
+        <InfoSection trip={trip} />
+      </section>
 
-            {/* Daily Plan */}
-            <PlacesToVisit trip={trip} />
+      {/* Hotels Section */}
+      <section className="bg-neutral-50 dark:bg-neutral-900 rounded-2xl shadow-sm border border-neutral-200 dark:border-neutral-800 p-6 sm:p-10">
+        <h2 className="text-2xl font-semibold text-neutral-800 dark:text-neutral-100 mb-6">
+          Recommended Hotels
+        </h2>
+        <Hotels trip={trip} />
+      </section>
 
-            {/* Footer */}
-            <Footer trip={trip} />
+      {/* Daily Plan Section */}
+      <section className="bg-neutral-50 dark:bg-neutral-900 rounded-2xl shadow-sm border border-neutral-200 dark:border-neutral-800 p-6 sm:p-10">
+        <h2 className="text-2xl font-semibold text-neutral-800 dark:text-neutral-100 mb-6">
+          Daily Plan
+        </h2>
+        <PlacesToVisit trip={trip} />
+      </section>
 
-        </div>
-    )
+      <DownloadPDF trip={trip} />
+
+      {/* Footer */}
+      <Footer trip={trip} />
+    </div>
+
+  );
 }
 
-export default Viewtrip
+export default Viewtrip;

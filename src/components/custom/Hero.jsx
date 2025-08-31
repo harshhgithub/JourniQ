@@ -1,18 +1,55 @@
 import React from 'react'
 import { Button } from '../ui/button'
 import { Link } from 'react-router-dom'
+import { MapPin, Compass, Users } from "lucide-react";
 
 function Hero() {
   return (
-    <div className='flex flex-col items-center mx-56 gap-9'>
-      <h1 className='font-extrabold text-[50px] text-center mt-10'><span className='text-[#f56551]'>Discover Your Next Adventure with AI: </span>Personalized Itineraries at Your Fingertips</h1>
+    <div className="flex items-center flex-col text-center justify-center min-h-screen py-16 bg-background text-foreground transition-colors">
+      <div className="px-6 md:px-24 flex flex-col items-center justify-center gap-10 max-w-5xl w-full">
+        
+        {/* Heading */}
+        <div className="space-y-4">
+          <h1 className="font-extrabold text-3xl md:text-5xl text-neutral-900 dark:text-neutral-100 leading-snug">
+            Embark on Electrifying <br /> Adventures with
+          </h1>
+          <h1 className="font-extrabold text-5xl md:text-8xl text-blue-600 dark:text-blue-400">
+            JourniQ
+          </h1>
+        </div>
 
-      <p className='text-xl text-gray-500 text-center'>Your personal trip planner and travel curator, creating custom itineraries tailored to your interests and budget.</p>
+        {/* Description */}
+        <p className="text-base md:text-xl font-medium text-neutral-600 dark:text-neutral-300 max-w-2xl">
+          Your trusted trip planner and adventure guide.
+        </p>
 
-      <Link to={'/create-trip'}><Button>Get Started, It's free</Button></Link>
+        {/* CTA Button */}
+        <Link to="/create-trip">
+          <Button className="text-base md:text-lg px-6 py-3 shadow-lg hover:shadow-xl transition-shadow">
+            Get Started – It's Free
+          </Button>
+        </Link>
 
-      <img src="/landing.png" alt="" className='w-[750px]' />
-
+        {/* Features Section */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12 w-full">
+          {[
+            { icon: <MapPin className="h-8 w-8 text-blue-500 transition-transform group-hover:scale-110" />, title: "Plan Trips", desc: "Organize journeys with ease." },
+            { icon: <Compass className="h-8 w-8 text-green-500 transition-transform group-hover:scale-110" />, title: "Discover Adventures", desc: "Explore hidden gems worldwide." },
+            { icon: <Users className="h-8 w-8 text-purple-500 transition-transform group-hover:scale-110" />, title: "Share Memories", desc: "Connect with fellow travelers." }
+          ].map((feature, index) => (
+            <div
+              key={index}
+              className="group flex flex-col items-center gap-3 p-6 rounded-2xl bg-white dark:bg-neutral-900 shadow-md hover:shadow-lg transition-all"
+            >
+              {feature.icon}
+              <p className="font-semibold">{feature.title}</p>
+              <span className="text-sm text-neutral-500 dark:text-neutral-400">
+                {feature.desc}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   )
 }

@@ -160,18 +160,22 @@ function CreateTrip() {
           boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
           zIndex: 50,
         }),
-        option: (provided, state) => ({
-          ...provided,
-          backgroundColor: state.isFocused 
-            ? (document.documentElement.classList.contains("dark") ? "#2563eb" : "#e5f0ff")
-            : "transparent",
-          color: state.isFocused 
-            ? "#ffffff" 
-            : (document.documentElement.classList.contains("dark") ? "#d1d5db" : "#374151"),
-          padding: "10px",
-          borderRadius: "0.5rem",
-          cursor: "pointer",
-        }),
+        
+        option: (provided, state) => {
+          const isDark = document.documentElement.classList.contains("dark");
+          return {
+            ...provided,
+            backgroundColor: state.isFocused 
+              ? (isDark ? "#2563eb" : "#e5f0ff") 
+              : "transparent",
+            color: state.isFocused 
+              ? (isDark ? "#ffffff" : "#111827") // ✅ fix: dark text in light mode hover
+              : (isDark ? "#d1d5db" : "#374151"),
+            padding: "10px",
+            borderRadius: "0.5rem",
+            cursor: "pointer",
+          };
+        },
         placeholder: (provided) => ({
           ...provided,
           color: document.documentElement.classList.contains("dark") ? "#9ca3af" : "#6b7280",

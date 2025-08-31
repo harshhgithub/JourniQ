@@ -10,11 +10,7 @@
 </p>
 
 <p align="center">A full-stack web application that helps users plan their trips by providing AI-powered recommendations for travel itineraries, places to visit, and hotels. This app integrates Google Generative AI for dynamic travel planning, Firebase for data storage, and Google Places API for fetching detailed information about places and hotels. </p>
-
-
-<h3 align="center">
-<a href="https://ai-trip-planner-barika.vercel.app/" target="_blank">📱 Visit this Project</a>
-</h3> <br>
+<br>
 
 <h2 id="technologies">💻 Technologies</h2>
 

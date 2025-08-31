@@ -1,5 +1,5 @@
                   
-<h1 align="center" style="font-weight: bold;">Full-Stack Trip Planner Web App</h1>
+<h1 align="center" style="font-weight: bold;">JourniQ-Full-Stack Trip Planner Web App</h1>
 
 <p align="center">
 <a href="#tech">Technologies |</a>
@@ -38,30 +38,7 @@
 - Interactive UI: User-friendly and responsive interface designed with TailwindCSS.
 - Data Storage: Persistent storage of user trip data in Firebase Firestore.
 - Travel Itineraries: Detailed daily travel plans including attractions, timings, and ticket pricing.
-
- 
-<br><h2 id="layout">🎨 Layout</h2>
-
-<p>
-Home Page:
-<img src="https://github.com/barika001/ai-trip-planner/blob/main/public/asset/1.1.png" alt="">
-
-Google OAuth Sign in:
-  <img src="https://github.com/barika001/ai-trip-planner/blob/main/public/asset/2.png" alt="">
-  
-Create Trip Page:
-<img src="https://github.com/barika001/ai-trip-planner/blob/main/public/asset/4.4.png" alt="">
-
-View Trip Page: AI-generated Hotel Recommendations & Places to Visit
-<img src="https://github.com/barika001/ai-trip-planner/blob/main/public/asset/7.png" alt="" width="75%" align="center">
-
-My Trips Page:
-<img src="https://github.com/barika001/ai-trip-planner/blob/main/public/asset/6.png" alt="">
-
-Responsive view on mobile: <br>
-<img src="https://github.com/barika001/ai-trip-planner/blob/main/public/asset/8.jpg" alt="" width="30%" align="center">
-</p>
- 
+- Itenerary PDF - Export itinerary & cost breakdown as a PDF.  
 
 <h2 id="pre">🗁 Prerequisites</h2>
 

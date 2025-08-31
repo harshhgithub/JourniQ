@@ -1,9 +1,11 @@
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs, deleteDoc, doc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { db } from "@/service/firebaseConfig";
 import UserTripCardItem from "./components/UserTripCardItem";
 import { Button } from "@/components/ui/button";
+import { Plane,X } from "lucide-react"; // make sure you installed lucide-react
+
 
 function MyTrips() {
   const navigate = useNavigate();
@@ -26,11 +28,20 @@ function MyTrips() {
     );
     const querySnapshot = await getDocs(q);
     let trips = [];
-    querySnapshot.forEach((doc) => {
-      trips.push(doc.data());
+    querySnapshot.forEach((docSnap) => {
+      trips.push({ id: docSnap.id, ...docSnap.data() }); // include doc.id
     });
     setUserTrips(trips);
     setLoading(false);
+  };
+
+  const handleDelete = async (tripId) => {
+    try {
+      await deleteDoc(doc(db, "AITrips", tripId));
+      setUserTrips(userTrips.filter((trip) => trip.id !== tripId)); // update UI
+    } catch (error) {
+      console.error("Error deleting trip:", error);
+    }
   };
 
   return (
@@ -46,37 +57,45 @@ function MyTrips() {
       </div>
 
       {/* Trips List */}
-<div className="mt-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 md:gap-6">
-  {loading ? (
-    // Skeleton loading cards
-    [1, 2, 3, 4, 5, 6].map((item) => (
-      <div
-        key={item}
-        className="h-[250px] w-full bg-gray-200 dark:bg-neutral-800 animate-pulse rounded-xl shadow-sm"
-      ></div>
-    ))
-  ) : userTrips?.length > 0 ? (
-    userTrips.map((trip, index) => (
-      <UserTripCardItem trip={trip} key={index} />
-    ))
-  ) : (
-    // Empty state
-    <div className="col-span-full flex flex-col items-center text-center mt-10">
-      <Plane className="w-12 h-12 text-gray-400" />
-      <h3 className="mt-4 text-xl font-semibold">No trips yet</h3>
-      <p className="text-gray-500 mt-2">
-        Start planning your next adventure and your trips will appear here.
-      </p>
-      <Button
-        className="mt-6 px-6 py-3 text-lg rounded-xl shadow-md hover:shadow-lg"
-        onClick={() => navigate("/create-trip")}
-      >
-        Create a Trip
-      </Button>
-    </div>
-  )}
-</div>
-
+      <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 md:gap-6">
+        {loading ? (
+          // Skeleton loading cards
+          [1, 2, 3, 4, 5, 6].map((item) => (
+            <div
+              key={item}
+              className="h-[250px] w-full bg-gray-200 dark:bg-neutral-800 animate-pulse rounded-xl shadow-sm"
+            ></div>
+          ))
+        ) : userTrips?.length > 0 ? (
+          userTrips.map((trip) => (
+            <div key={trip.id} className="relative">
+              <UserTripCardItem trip={trip} />
+              {/* Cross button */}
+              <button
+                onClick={() => handleDelete(trip.id)}
+                className="absolute top-2 right-2 p-1 rounded-full bg-white dark:bg-neutral-900 shadow hover:bg-gray-100 dark:hover:bg-neutral-800 transition"
+              >
+                <X className="w-4 h-4 text-gray-600 dark:text-gray-300" />
+              </button>
+            </div>
+          ))
+        ) : (
+          // Empty state
+          <div className="col-span-full flex flex-col items-center text-center mt-10">
+            <Plane className="w-12 h-12 text-gray-400" />
+            <h3 className="mt-4 text-xl font-semibold">No trips yet</h3>
+            <p className="text-gray-500 mt-2">
+              Start planning your next adventure and your trips will appear here.
+            </p>
+            <Button
+              className="mt-6 px-6 py-3 text-lg rounded-xl shadow-md hover:shadow-lg"
+              onClick={() => navigate("/create-trip")}
+            >
+              Create a Trip
+            </Button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

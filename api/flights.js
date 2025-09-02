@@ -1,0 +1,46 @@
+// /api/flights.js
+export default async function handler(req, res) {
+  const { origin, destination } = req.query;
+
+  if (!origin || !destination) {
+    return res.status(400).json({ error: "Origin and destination are required" });
+  }
+
+  try {
+    // Get Access Token
+    const tokenRes = await fetch("https://test.api.amadeus.com/v1/security/oauth2/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        grant_type: "client_credentials",
+        client_id: process.env.AMADEUS_API_KEY,
+        client_secret: process.env.AMADEUS_API_SECRET,
+      }),
+    });
+
+    const tokenData = await tokenRes.json();
+    const accessToken = tokenData.access_token;
+
+    // Search flights (simple example: one adult, tomorrow’s date)
+    const flightRes = await fetch(
+      `https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=${origin}&destinationLocationCode=${destination}&departureDate=${new Date(Date.now() + 86400000).toISOString().split("T")[0]}&adults=1&max=5`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    const data = await flightRes.json();
+    res.status(200).json(data);
+  } catch (err) {
+    console.error("Flights API error:", err.message);
+    res.status(500).json({ error: err.message });
+  }
+}
+
+
+
+
+
+

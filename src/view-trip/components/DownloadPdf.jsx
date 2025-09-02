@@ -17,11 +17,15 @@ function DownloadPDF({ trip }) {
           JSON.stringify(trip?.userSelection?.location)
         : trip?.userSelection?.location || "N/A";
 
-    const days = trip?.userSelection?.days || "N/A";
+         const days =
+      trip?.userSelection?.days && !isNaN(trip?.userSelection?.days)
+        ? trip?.userSelection?.days
+        : trip?.tripData?.itinerary?.length || "N/A";
+
 
     doc.setFontSize(12);
     doc.text(`Destination: ${destination}`, 14, 30);
-    doc.text(`Days: ${days}`, 14, 38);
+    doc.text(`Duration: ${days} Days`, 14, 38);
 
     let yPos = 50; // starting Y position for itinerary tables
 

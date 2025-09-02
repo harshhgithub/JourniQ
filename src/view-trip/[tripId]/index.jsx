@@ -8,6 +8,8 @@ import Hotels from '../components/Hotels';
 import PlacesToVisit from '../components/PlacesToVisit';
 import Footer from '../components/Footer';
 import DownloadPDF from '../components/DownloadPdf';
+import FlightRecommendations from '../components/FlightRecommendations';
+
 
 function Viewtrip() {
   const { tripId } = useParams();
@@ -60,6 +62,17 @@ function Viewtrip() {
         <PlacesToVisit trip={trip} />
       </section>
 
+       {/* Flight Recommendations Section */}
+    <section className="bg-neutral-50 dark:bg-neutral-900 rounded-2xl shadow-sm border border-neutral-200 dark:border-neutral-800 p-6 sm:p-10">
+      <h2 className="text-2xl font-semibold text-neutral-800 dark:text-neutral-100 mb-6">
+        Search Flights
+      </h2>
+      <FlightRecommendations trip={trip} />
+    </section>
+
+
+
+    {/*PDF - Export Button*/}
       <DownloadPDF trip={trip} />
 
       {/* Footer */}

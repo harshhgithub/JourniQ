@@ -31,24 +31,38 @@ function Hero() {
         </Link>
 
         {/* Features Section */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12 w-full">
-          {[
-            { icon: <MapPin className="h-8 w-8 text-blue-500 transition-transform group-hover:scale-110" />, title: "Plan Trips", desc: "Organize journeys with ease." },
-            { icon: <Compass className="h-8 w-8 text-green-500 transition-transform group-hover:scale-110" />, title: "Discover Adventures", desc: "Explore hidden gems worldwide." },
-            { icon: <Users className="h-8 w-8 text-purple-500 transition-transform group-hover:scale-110" />, title: "Share Memories", desc: "Connect with fellow travelers." }
-          ].map((feature, index) => (
-            <div
-              key={index}
-              className="group flex flex-col items-center gap-3 p-6 rounded-2xl bg-white dark:bg-neutral-900 shadow-md hover:shadow-lg transition-all"
-            >
-              {feature.icon}
-              <p className="font-semibold">{feature.title}</p>
-              <span className="text-sm text-neutral-500 dark:text-neutral-400">
-                {feature.desc}
-              </span>
-            </div>
-          ))}
-        </div>
+<div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12 w-full">
+  {[
+    { 
+      icon: <MapPin className="h-8 w-8 text-blue-500 transition-transform group-hover:scale-110" />, 
+      title: "AI-Powered Itineraries", 
+      desc: "Create personalized daily travel plans tailored for you." 
+    },
+    { 
+      icon: <Compass className="h-8 w-8 text-green-500 transition-transform group-hover:scale-110" />, 
+      title: "Flight Search", 
+      desc: "Find the best flight options for your next adventure." 
+    },
+    { 
+      icon: <Users className="h-8 w-8 text-purple-500 transition-transform group-hover:scale-110" />, 
+      title: "PDF Export", 
+      desc: "Download and carry your itinerary anytime, anywhere." 
+    }
+  ].map((feature, index) => (
+    <div
+      key={index}
+      className="group flex flex-col items-center gap-3 p-6 rounded-2xl bg-white dark:bg-neutral-900 shadow-md hover:shadow-lg transition-all"
+    >
+      {feature.icon}
+      <p className="font-semibold">{feature.title}</p>
+      <span className="text-sm text-neutral-500 dark:text-neutral-400">
+        {feature.desc}
+      </span>
+    </div>
+  ))}
+</div>
+
+
       </div>
     </div>
   )

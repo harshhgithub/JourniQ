@@ -34,7 +34,7 @@
 - Interactive UI: User-friendly and responsive interface designed with TailwindCSS.
 - Data Storage: Persistent storage of user trip data in Firebase Firestore.
 - Travel Itineraries: Detailed daily travel plans including attractions, timings, and ticket pricing.
-- Itenerary PDF - Export itinerary & cost breakdown as a PDF.  
+- Itenerary PDF - Export itinerary as a PDF.  
 
 <h2 id="pre">🗁 Prerequisites</h2>
 

@@ -6,7 +6,10 @@
 <a href="#features">Features |</a>
 <a href="#layout">Layout |</a>
 <a href="#pre">Prerequisites</a>
- 
+
+<br>
+<img width="1700" height="977" alt="Screenshot (748)" src="https://github.com/user-attachments/assets/ca393584-8440-4c02-bb44-879dd6986e68" />
+
 </p>
 
 <p align="center">A full-stack web application that helps users plan their trips by providing AI-powered recommendations for travel itineraries, places to visit, and hotels. This app integrates Google Generative AI for dynamic travel planning, Firebase for data storage, and Google Places API for fetching detailed information about places and hotels. </p>

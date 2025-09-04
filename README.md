@@ -1,12 +1,5 @@
                   
 <h1 align="center" style="font-weight: bold;">JourniQ-Full-Stack Trip Planner Web App</h1>
-
-<p align="center">
-<a href="#tech">Technologies |</a>
-<a href="#features">Features |</a>
-<a href="#layout">Layout |</a>
-<a href="#pre">Prerequisites</a>
-
 <br>
 <img width="1700" height="977" alt="Screenshot (748)" src="https://github.com/user-attachments/assets/ca393584-8440-4c02-bb44-879dd6986e68" />
 

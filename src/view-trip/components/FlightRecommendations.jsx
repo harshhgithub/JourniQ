@@ -23,7 +23,7 @@ export default function FlightRecommendation() {
 
     try {
       const res = await fetch(
-        `http://localhost:5000/api/flights?origin=${form.origin}&destination=${form.destination}&departureDate=${form.departureDate}&adults=${form.adults}&max=5`
+        `/api/flights?origin=${form.origin}&destination=${form.destination}&departureDate=${form.departureDate}&adults=${form.adults}&max=5`
       );
 
       if (!res.ok) throw new Error("Failed to fetch flights");

@@ -8,11 +8,15 @@ dotenv.config();
 const app = express();
 app.use(cors());
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 // Flights API endpoint
 app.get("/api/flights", async (req, res) => {
-  const { origin, destination, departureDate, adults, max } = req.query;
+  const { origin, destination, departureDate, adults = 1, max = 5 } = req.query;
+
+  if (!origin || !destination || !departureDate) {
+    return res.status(400).json({ error: "origin, destination, and departureDate are required" });
+  }
 
   try {
     // Get Access Token
@@ -29,20 +33,19 @@ app.get("/api/flights", async (req, res) => {
     const tokenData = await tokenRes.json();
     const accessToken = tokenData.access_token;
 
+    if (!accessToken) throw new Error("Failed to get access token");
+
     // Fetch flight offers
     const flightRes = await fetch(
-      `https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=${origin}&destinationLocationCode=${destination}&departureDate=${departureDate}&adults=${adults || 1}&max=${max || 4}`,
+      `https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=${origin}&destinationLocationCode=${destination}&departureDate=${departureDate}&adults=${adults}&max=${max}`,
       {
         headers: { Authorization: `Bearer ${accessToken}` },
       }
     );
 
-    if (!flightRes.ok) {
-      const txt = await flightRes.text();
-      throw new Error(txt || `Flight API error ${flightRes.status}`);
-    }
-
     const flights = await flightRes.json();
+
+    // Return flights data directly
     res.status(200).json(flights);
   } catch (err) {
     console.error("Flights API error:", err.message);

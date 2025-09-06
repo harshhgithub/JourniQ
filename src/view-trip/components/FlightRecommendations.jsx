@@ -7,7 +7,6 @@ export default function FlightRecommendation() {
     departureDate: "",
     adults: 1,
   });
-
   const [flights, setFlights] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -24,13 +23,20 @@ export default function FlightRecommendation() {
 
     try {
       const res = await fetch(
-        `http://localhost:5000/api/flights?origin=${form.origin}&destination=${form.destination}&departureDate=${form.departureDate}&adults=${form.adults}&max=3`
+        `http://localhost:5000/api/flights?origin=${form.origin}&destination=${form.destination}&departureDate=${form.departureDate}&adults=${form.adults}&max=5`
       );
 
       if (!res.ok) throw new Error("Failed to fetch flights");
 
       const data = await res.json();
-      setFlights(data.data || []);
+
+      if (!data.data || data.data.length === 0) {
+        setFlights([]);
+        setError("No flights found");
+        return;
+      }
+
+      setFlights(data.data);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -39,16 +45,13 @@ export default function FlightRecommendation() {
   };
 
   return (
-    <div className="p-6 border rounded-2xl shadow-md my-8 bg-white dark:bg-gray-900 dark:border-gray-700 transition-colors duration-300">
+    <div className="p-6 border rounded-2xl shadow-md my-8 bg-white dark:bg-gray-900 dark:border-gray-700 transition-colors">
       <h2 className="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-100">
-        
+        Flight Recommendations
       </h2>
 
       {/* Form */}
-      <form
-        onSubmit={searchFlights}
-        className="grid grid-cols-2 gap-4 mb-6 text-gray-800 dark:text-gray-200"
-      >
+      <form onSubmit={searchFlights} className="grid grid-cols-2 gap-4 mb-6 text-gray-800 dark:text-gray-200">
         <input
           type="text"
           name="origin"
@@ -96,30 +99,25 @@ export default function FlightRecommendation() {
 
       {/* Results */}
       <div>
-        {flights.length > 0 ? (
+        {flights.length > 0 && !loading ? (
           <ul className="space-y-4">
             {flights.map((flight, idx) => {
-              const price = flight.price?.total;
-              const itinerary = flight.itineraries?.[0];
-              const segments = itinerary?.segments || [];
-              const from = segments[0]?.departure?.iataCode;
-              const to = segments[segments.length - 1]?.arrival?.iataCode;
+              const price = flight.price?.total || "N/A";
+              const itinerary = flight.itineraries?.[0] || {};
+              const segments = itinerary.segments || [];
+              if (segments.length === 0) return null;
 
-              const depTime = new Date(
-                segments[0]?.departure?.at
-              ).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-
-              const arrTime = new Date(
-                segments[segments.length - 1]?.arrival?.at
-              ).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-
+              const from = segments[0]?.departure?.iataCode || "";
+              const to = segments[segments.length - 1]?.arrival?.iataCode || "";
+              const depTime = new Date(segments[0]?.departure?.at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+              const arrTime = new Date(segments[segments.length - 1]?.arrival?.at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
               const airline = segments[0]?.carrierCode || "XX";
 
+              // Booking link (use Amadeus self link or fallback to Google search)
+              const bookingLink = flight?.self || `https://www.google.com/search?q=${airline}+flight+${from}+to+${to}+${segments[0]?.departure?.at?.split("T")[0]}`;
+
               return (
-                <li
-                  key={idx}
-                  className="p-4 border rounded-xl shadow-sm bg-gray-50 dark:bg-gray-800 dark:border-gray-700 transition-colors duration-300 flex justify-between items-center"
-                >
+                <li key={idx} className="p-4 border rounded-xl shadow-sm bg-gray-50 dark:bg-gray-800 dark:border-gray-700 flex justify-between items-center transition-colors duration-300">
                   {/* Airline & Route */}
                   <div className="flex items-center space-x-4">
                     <img
@@ -138,25 +136,25 @@ export default function FlightRecommendation() {
                     </div>
                   </div>
 
-                  {/* Price */}
-                  <div className="text-right">
-                    <p className="text-xl font-bold text-blue-600 dark:text-blue-400">
-                      ${price}
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      per adult
-                    </p>
+                  {/* Price & Booking */}
+                  <div className="text-right flex flex-col items-end gap-2">
+                    <p className="text-xl font-bold text-blue-600 dark:text-blue-400">${price}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">per adult</p>
+                    <a
+                      href={bookingLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-green-500 hover:bg-green-600 text-white text-sm px-3 py-1 rounded transition"
+                    >
+                      Book Now
+                    </a>
                   </div>
                 </li>
               );
             })}
           </ul>
         ) : (
-          !loading && (
-            <p className="text-gray-500 dark:text-gray-400">
-              No flights found yet.
-            </p>
-          )
+          !loading && <p className="text-gray-500 dark:text-gray-400">No flights found yet.</p>
         )}
       </div>
     </div>

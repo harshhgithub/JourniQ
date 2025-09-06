@@ -1,12 +1,8 @@
                   
 <h1 align="center" style="font-weight: bold;">JourniQ-Full-Stack Trip Planner Web App</h1>
+<br>
+<img width="1700" height="977" alt="Screenshot (748)" src="https://github.com/user-attachments/assets/ca393584-8440-4c02-bb44-879dd6986e68" />
 
-<p align="center">
-<a href="#tech">Technologies |</a>
-<a href="#features">Features |</a>
-<a href="#layout">Layout |</a>
-<a href="#pre">Prerequisites</a>
- 
 </p>
 
 <p align="center">A full-stack web application that helps users plan their trips by providing AI-powered recommendations for travel itineraries, places to visit, and hotels. This app integrates Google Generative AI for dynamic travel planning, Firebase for data storage, and Google Places API for fetching detailed information about places and hotels. </p>
@@ -34,7 +30,8 @@
 - Interactive UI: User-friendly and responsive interface designed with TailwindCSS.
 - Data Storage: Persistent storage of user trip data in Firebase Firestore.
 - Travel Itineraries: Detailed daily travel plans including attractions, timings, and ticket pricing.
-- Itenerary PDF - Export itinerary as a PDF.  
+- Itenerary PDF - Export itinerary as a PDF.
+- Flight Search - Find the best flight options for your next adventure.
 
 <h2 id="pre">🗁 Prerequisites</h2>
 

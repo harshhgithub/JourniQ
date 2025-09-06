@@ -250,23 +250,24 @@ function CreateTrip() {
       </div>
 
       {/* Login Dialog */}
-      <Dialog open={openDialog}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogDescription className="space-y-4 text-center">
-              <img src="/logo.png" alt="logo" width="80" className="mx-auto" />
-              <h2 className="font-bold text-xl">Sign in to see your travel plan</h2>
-              <p className="text-gray-500">Use Google authentication to securely sign in</p>
-              <Button
-                onClick={login}
-                className="w-full mt-6 flex gap-3 items-center justify-center"
-              >
-                <FcGoogle className="h-6 w-6" /> Sign in with Google
-              </Button>
-            </DialogDescription>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
+      <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+  <DialogContent className="max-w-md">
+    <DialogHeader>
+      <DialogDescription className="space-y-4 text-center">
+        <img src="/logo.png" alt="logo" width="80" className="mx-auto" />
+        <h2 className="font-bold text-xl">Sign in to see your travel plan</h2>
+        <p className="text-gray-500">Use Google authentication to securely sign in</p>
+        <Button
+          onClick={login}
+          className="w-full mt-6 flex gap-3 items-center justify-center"
+        >
+          <FcGoogle className="h-6 w-6" /> Sign in with Google
+        </Button>
+      </DialogDescription>
+    </DialogHeader>
+  </DialogContent>
+</Dialog>
+
     </div>
   )
 }

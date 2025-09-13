@@ -42,8 +42,8 @@
 
 <h2 id="pre">🗁 Prerequisites</h2>
 
-- 🟢 **Node.js & npm** installed.  
-- 🔥 **Firebase Project** — Set up Firestore and Authentication. Obtain your Firebase configuration keys.  
-- 🔑 **Google API Keys** — For Google Generative AI (Gemini) and Google Places API.  
+-  **Node.js & npm** installed.  
+-  **Firebase Project** — Set up Firestore and Authentication. Obtain your Firebase configuration keys.  
+-  **Google API Keys** — For Google Generative AI (Gemini) and Google Places API.  
 
 

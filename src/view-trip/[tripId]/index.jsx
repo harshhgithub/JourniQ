@@ -9,7 +9,7 @@ import PlacesToVisit from '../components/PlacesToVisit';
 import Footer from '../components/Footer';
 import DownloadPDF from '../components/DownloadPdf';
 import FlightRecommendations from '../components/FlightRecommendations';
-
+import CostBreakdown from '../components/CostBreakdown';
 
 function Viewtrip() {
   const { tripId } = useParams();
@@ -38,6 +38,7 @@ function Viewtrip() {
       </div>
     );
   }
+  console.log("Trip data from Firestore:", trip);
 
   return (
     <div className="px-5 sm:px-10 md:px-16 lg:px-28 xl:px-40 py-12 space-y-16">
@@ -62,23 +63,31 @@ function Viewtrip() {
         <PlacesToVisit trip={trip} />
       </section>
 
-       {/* Flight Recommendations Section */}
-    <section className="bg-neutral-50 dark:bg-neutral-900 rounded-2xl shadow-sm border border-neutral-200 dark:border-neutral-800 p-6 sm:p-10">
-      <h2 className="text-2xl font-semibold text-neutral-800 dark:text-neutral-100 mb-6">
-        Search Flights
-      </h2>
-      <FlightRecommendations trip={trip} />
-    </section>
+      {/* ✅ Cost Breakdown Section */}
+      {trip.tripData?.cost_breakdown && (
+  <section className="bg-neutral-50 dark:bg-neutral-900 rounded-2xl shadow-sm border border-neutral-200 dark:border-neutral-800 p-6 sm:p-10">
+    <h2 className="text-2xl font-semibold text-neutral-800 dark:text-neutral-100 mb-6">
+      Estimated Cost Breakdown
+    </h2>
+    <CostBreakdown cost={trip.tripData.cost_breakdown} />
+  </section>
+)}
+
+      {/* Flight Recommendations Section */}
+      <section className="bg-neutral-50 dark:bg-neutral-900 rounded-2xl shadow-sm border border-neutral-200 dark:border-neutral-800 p-6 sm:p-10">
+        <h2 className="text-2xl font-semibold text-neutral-800 dark:text-neutral-100 mb-6">
+          Search Flights
+        </h2>
+        <FlightRecommendations trip={trip} />
+      </section>
 
 
-
-    {/*PDF - Export Button*/}
+      {/* PDF - Export Button */}
       <DownloadPDF trip={trip} />
 
       {/* Footer */}
       <Footer trip={trip} />
     </div>
-
   );
 }
 

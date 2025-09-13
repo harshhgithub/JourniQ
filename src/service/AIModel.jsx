@@ -57,13 +57,21 @@ Always return ONLY valid JSON in this format:
       "day": "Day 3",
       "plan": [ ... ]
     }
-  ]
+  ],
+  "cost_breakdown": {
+    "flights": "Approx cost in USD or INR",
+    "hotel": "Approx cost in USD or INR",
+    "meals": "Approx cost in USD or INR",
+    "activities": "Approx cost in USD or INR",
+    "total": "Sum of all in same currency"
+  }
 }
 
 ⚠️ Rules:
 - Always generate the SAME number of days as requested by the user (e.g., if asked for 3 days, return exactly Day 1, Day 2, Day 3).
 - Each day must include at least 3 time slots: morning, afternoon, evening.
 - Every plan item MUST have "ticket_pricing" (even if it's "Free").
+- Always provide a realistic cost_breakdown based on budget type (cheap, moderate, luxury).
 - No markdown, no commentary. Pure JSON only.`,
         },
       ],

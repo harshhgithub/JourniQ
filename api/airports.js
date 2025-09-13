@@ -1,46 +1,46 @@
-// routes/airports.js
-import express from "express";
-import axios from "axios";
+export default async function handler(req, res) {
+  const { keyword, max = 5 } = req.query;
 
-const router = express.Router();
+  if (!keyword) {
+    return res.status(400).json({ error: "keyword is required" });
+  }
 
-// Get Amadeus token
-async function getToken() {
-  const res = await axios.post(
-    "https://test.api.amadeus.com/v1/security/oauth2/token",
-    new URLSearchParams({
-      grant_type: "client_credentials",
-      client_id: process.env.AMADEUS_CLIENT_ID,
-      client_secret: process.env.AMADEUS_CLIENT_SECRET,
-    }),
-    { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
-  );
-  return res.data.access_token;
-}
-
-// Airport autocomplete
-router.get("/", async (req, res) => {
   try {
-    const { keyword } = req.query;
-    const token = await getToken();
-
-    const resp = await axios.get(
-      "https://test.api.amadeus.com/v1/reference-data/locations",
+    // Get access token (inline)
+    const tokenRes = await fetch(
+      "https://test.api.amadeus.com/v1/security/oauth2/token",
       {
-        params: {
-          subType: "AIRPORT,CITY",
-          keyword,
-          page: { limit: 5 },
-        },
-        headers: { Authorization: `Bearer ${token}` },
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          grant_type: "client_credentials",
+          client_id: process.env.AMADEUS_API_KEY,
+          client_secret: process.env.AMADEUS_API_SECRET,
+        }),
       }
     );
 
-    res.json(resp.data);
-  } catch (err) {
-    console.error("Airport API error:", err.response?.data || err.message);
-    res.status(500).json({ error: "Failed to fetch airports" });
-  }
-});
+    const tokenData = await tokenRes.json();
+    const accessToken = tokenData.access_token;
 
-export default router;
+    if (!accessToken) throw new Error("Failed to get access token");
+
+    // Fetch airport data
+    const airportRes = await fetch(
+      `https://test.api.amadeus.com/v1/reference-data/locations?subType=CITY,AIRPORT&keyword=${keyword}&page[limit]=${max}`,
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+
+    const airportData = await airportRes.json();
+    if (!airportData.data) {
+      return res.status(404).json({ error: "No airports found" });
+    }
+
+    res.status(200).json(airportData.data);
+  } catch (err) {
+    console.error("Airport API error:", err.message);
+    res.status(500).json({ error: err.message });
+  }
+}

@@ -2,13 +2,13 @@ export default async function handler(req, res) {
   const { origin, destination, departureDate, adults = 1, max = 5 } = req.query;
 
   if (!origin || !destination || !departureDate) {
-    return res
-      .status(400)
-      .json({ error: "origin, destination, and departureDate are required" });
+    return res.status(400).json({
+      error: "origin, destination, and departureDate are required",
+    });
   }
 
   try {
-    // Get Access Token
+    // Get access token (inline)
     const tokenRes = await fetch(
       "https://test.api.amadeus.com/v1/security/oauth2/token",
       {
@@ -27,7 +27,7 @@ export default async function handler(req, res) {
 
     if (!accessToken) throw new Error("Failed to get access token");
 
-    // Search flights
+    // Fetch flights
     const flightRes = await fetch(
       `https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=${origin}&destinationLocationCode=${destination}&departureDate=${departureDate}&adults=${adults}&max=${max}`,
       {
@@ -35,8 +35,8 @@ export default async function handler(req, res) {
       }
     );
 
-    const data = await flightRes.json();
-    res.status(200).json(data);
+    const flightData = await flightRes.json();
+    res.status(200).json(flightData);
   } catch (err) {
     console.error("Flights API error:", err.message);
     res.status(500).json({ error: err.message });

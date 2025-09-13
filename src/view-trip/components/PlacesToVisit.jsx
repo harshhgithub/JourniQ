@@ -36,10 +36,6 @@ function PlacesToVisit({ trip }) {
           <div className="grid md:grid-cols-2 gap-6">
             {item.plan?.map((place, idx) => (
               <div key={idx}>
-                {/* Time label */}
-                <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400 mb-2">
-                  • {place.time}
-                </p>
 
                 {/* Place card */}
                 <PlaceCardItem place={place} />

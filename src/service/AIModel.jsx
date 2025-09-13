@@ -41,7 +41,13 @@ Always return ONLY valid JSON in this format:
   "itinerary": [
     {
       "day": "Day 1",
-      "plan": [ ... ]
+      "plan": [
+        {
+          "place": "Attraction Name",
+          "details": "Short description",
+          "ticket_pricing": "Entry fee or 'Free'"
+        }
+      ]
     },
     {
       "day": "Day 2",
@@ -57,6 +63,7 @@ Always return ONLY valid JSON in this format:
 ⚠️ Rules:
 - Always generate the SAME number of days as requested by the user (e.g., if asked for 3 days, return exactly Day 1, Day 2, Day 3).
 - Each day must include at least 3 time slots: morning, afternoon, evening.
+- Every plan item MUST have "ticket_pricing" (even if it's "Free").
 - No markdown, no commentary. Pure JSON only.`,
         },
       ],

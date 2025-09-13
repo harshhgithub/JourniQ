@@ -11,8 +11,50 @@ export default function FlightRecommendation() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  // For airport suggestions
+  const [originSuggestions, setOriginSuggestions] = useState([]);
+  const [destinationSuggestions, setDestinationSuggestions] = useState([]);
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+
+    // Trigger airport autocomplete
+    if (e.target.name === "origin") {
+      fetchAirports(e.target.value, "origin");
+    } else if (e.target.name === "destination") {
+      fetchAirports(e.target.value, "destination");
+    }
+  };
+
+  // Fetch airports from Amadeus API
+const fetchAirports = async (keyword, field) => {
+  if (!keyword || keyword.length < 3) {
+    if (field === "origin") setOriginSuggestions([]);
+    if (field === "destination") setDestinationSuggestions([]);
+    return;
+  }
+
+  try {
+    const res = await fetch(
+      `/api/airports?keyword=${keyword}`
+    );
+    const data = await res.json(); // ✅ this is already an array!
+
+    if (field === "origin") setOriginSuggestions(data || []);
+    if (field === "destination") setDestinationSuggestions(data || []);
+  } catch (err) {
+    console.error("Error fetching airports:", err);
+  }
+};
+
+
+  const selectAirport = (airport, field) => {
+    setForm({
+      ...form,
+      [field]: airport.iataCode,
+    });
+    if (field === "origin") setOriginSuggestions([]);
+    if (field === "destination") setDestinationSuggestions([]);
   };
 
   const searchFlights = async (e) => {
@@ -31,7 +73,6 @@ export default function FlightRecommendation() {
       const data = await res.json();
 
       if (!data.data || data.data.length === 0) {
-        setFlights([]);
         setError("No flights found");
         return;
       }
@@ -45,31 +86,79 @@ export default function FlightRecommendation() {
   };
 
   return (
-    <div className="p-6 border rounded-2xl shadow-md my-8 bg-white dark:bg-gray-900 dark:border-gray-700 transition-colors">
+    <div className="p-6 border rounded-2xl shadow-md my-8 bg-white dark:bg-gray-900 dark:border-gray-700">
       <h2 className="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-100">
         Flight Recommendations
       </h2>
 
-      {/* Form */}
-      <form onSubmit={searchFlights} className="grid grid-cols-2 gap-4 mb-6 text-gray-800 dark:text-gray-200">
-        <input
-          type="text"
-          name="origin"
-          placeholder="Origin (e.g., DEL)"
-          value={form.origin}
-          onChange={handleChange}
-          className="border rounded-xl px-3 py-2 bg-gray-50 dark:bg-gray-800 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 outline-none"
-          required
-        />
-        <input
-          type="text"
-          name="destination"
-          placeholder="Destination (e.g., BOM)"
-          value={form.destination}
-          onChange={handleChange}
-          className="border rounded-xl px-3 py-2 bg-gray-50 dark:bg-gray-800 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 outline-none"
-          required
-        />
+      {/* Search Form */}
+      <form
+        onSubmit={searchFlights}
+        className="grid grid-cols-2 gap-4 mb-6 text-gray-800 dark:text-gray-200"
+      >
+        {/* ORIGIN */}
+        <div className="relative">
+          <input
+            type="text"
+            name="origin"
+            placeholder="Origin (city or airport)"
+            value={form.origin}
+            onChange={handleChange}
+            className="border rounded-xl px-3 py-2 w-full bg-gray-50 dark:bg-gray-800 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 outline-none"
+            required
+          />
+          {originSuggestions.length > 0 && (
+            <div className="absolute z-10 bg-white dark:bg-gray-800 border rounded-xl mt-1 w-full max-h-40 overflow-y-auto shadow">
+              {originSuggestions.map((airport) => (
+                <div
+                  key={airport.id}
+                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                  onClick={() => selectAirport(airport, "origin")}
+                >
+                  <p className="font-medium">
+                    {airport.name} ({airport.iataCode})
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    {airport.address?.cityName}, {airport.address?.countryName}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* DESTINATION */}
+        <div className="relative">
+          <input
+            type="text"
+            name="destination"
+            placeholder="Destination (city or airport)"
+            value={form.destination}
+            onChange={handleChange}
+            className="border rounded-xl px-3 py-2 w-full bg-gray-50 dark:bg-gray-800 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 outline-none"
+            required
+          />
+          {destinationSuggestions.length > 0 && (
+            <div className="absolute z-10 bg-white dark:bg-gray-800 border rounded-xl mt-1 w-full max-h-40 overflow-y-auto shadow">
+              {destinationSuggestions.map((airport) => (
+                <div
+                  key={airport.id}
+                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                  onClick={() => selectAirport(airport, "destination")}
+                >
+                  <p className="font-medium">
+                    {airport.name} ({airport.iataCode})
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    {airport.address?.cityName}, {airport.address?.countryName}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* DATE + ADULTS */}
         <input
           type="date"
           name="departureDate"
@@ -109,16 +198,21 @@ export default function FlightRecommendation() {
 
               const from = segments[0]?.departure?.iataCode || "";
               const to = segments[segments.length - 1]?.arrival?.iataCode || "";
-              const depTime = new Date(segments[0]?.departure?.at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-              const arrTime = new Date(segments[segments.length - 1]?.arrival?.at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+              const depTime = new Date(
+                segments[0]?.departure?.at
+              ).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+              const arrTime = new Date(
+                segments[segments.length - 1]?.arrival?.at
+              ).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
               const airline = segments[0]?.carrierCode || "XX";
 
-              // Booking link (use Amadeus self link or fallback to Google search)
-              const bookingLink = flight?.self || `https://www.google.com/search?q=${airline}+flight+${from}+to+${to}+${segments[0]?.departure?.at?.split("T")[0]}`;
+              const bookingLink = `https://www.google.com/search?q=${airline}+flight+${from}+to+${to}+${segments[0]?.departure?.at?.split("T")[0]}`;
 
               return (
-                <li key={idx} className="p-4 border rounded-xl shadow-sm bg-gray-50 dark:bg-gray-800 dark:border-gray-700 flex justify-between items-center transition-colors duration-300">
-                  {/* Airline & Route */}
+                <li
+                  key={idx}
+                  className="p-4 border rounded-xl shadow-sm bg-gray-50 dark:bg-gray-800 dark:border-gray-700 flex justify-between items-center"
+                >
                   <div className="flex items-center space-x-4">
                     <img
                       src={`https://content.airhex.com/content/logos/airlines_${airline}_50_50_s.png`}
@@ -127,7 +221,7 @@ export default function FlightRecommendation() {
                       onError={(e) => (e.target.style.display = "none")}
                     />
                     <div>
-                      <p className="font-semibold text-lg text-gray-800 dark:text-gray-100">
+                      <p className="font-semibold text-lg">
                         {from} → {to}
                       </p>
                       <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -136,10 +230,13 @@ export default function FlightRecommendation() {
                     </div>
                   </div>
 
-                  {/* Price & Booking */}
                   <div className="text-right flex flex-col items-end gap-2">
-                    <p className="text-xl font-bold text-blue-600 dark:text-blue-400">${price}</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">per adult</p>
+                    <p className="text-xl font-bold text-blue-600 dark:text-blue-400">
+                      ${price}
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      per adult
+                    </p>
                     <a
                       href={bookingLink}
                       target="_blank"
@@ -154,7 +251,11 @@ export default function FlightRecommendation() {
             })}
           </ul>
         ) : (
-          !loading && <p className="text-gray-500 dark:text-gray-400">No flights found yet.</p>
+          !loading && (
+            <p className="text-gray-500 dark:text-gray-400">
+              No flights found yet.
+            </p>
+          )
         )}
       </div>
     </div>

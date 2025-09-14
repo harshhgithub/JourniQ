@@ -1,40 +1,49 @@
-                  
-<h1 align="center" style="font-weight: bold;">JourniQ-Full-Stack Trip Planner Web App</h1>
+<h1 align="center" style="font-weight: bold;"> JourniQ — Full-Stack AI Trip Planner Web App</h1>
 <br>
-<img width="1700" height="977" alt="Screenshot (748)" src="https://github.com/user-attachments/assets/ca393584-8440-4c02-bb44-879dd6986e68" />
+<img width="1700" height="977" alt="JourniQ Screenshot" src="https://github.com/user-attachments/assets/ca393584-8440-4c02-bb44-879dd6986e68" />
 
+<p align="center">
+  JourniQ is a full-stack web application that helps travelers plan their trips effortlessly.  
+  Powered by <b>Google Generative AI</b>, it creates smart itineraries, hotel recommendations, cost breakdowns, and more.  
+  Built with <b>React</b>, <b>TailwindCSS</b>, <b>Firebase</b>, and <b>Google Places API</b>.
 </p>
-
-<p align="center">A full-stack web application that helps users plan their trips by providing AI-powered recommendations for travel itineraries, places to visit, and hotels. This app integrates Google Generative AI for dynamic travel planning, Firebase for data storage, and Google Places API for fetching detailed information about places and hotels. </p>
 <br>
 
 <h2 id="technologies">💻 Technologies</h2>
 
-<b><em>Frontend:</b></em>
+<b><em>Frontend:</em></b>
 
-- React: For building the user interface and handling frontend logic.
-- TailwindCSS: For styling and responsive design.
-- Axios: For making HTTP requests to external APIs.
+-  **React** — For building a fast and dynamic user interface.
+-  **TailwindCSS** — For modern, responsive, and consistent styling.
+-  **Axios** — For making API requests to external services.
 
-<b><em>Backend & Services:</b></em>
-- Google Generative AI API: For generating AI-powered travel recommendations and itineraries.
-- Google Places API: For retrieving detailed information about places, hotels, and their photos.
-- Firebase Firestore: For storing and managing user trip data.
-- Firebase Authentication: For handling user authentication via Google OAuth.
+<b><em>Backend & Services:</em></b>
 
-<br><h2 id="features">🚀 Features</h2>
+-  **Google Generative AI (Gemini)** — For generating AI-powered travel recommendations and itineraries.
+-  **Google Places API** — For fetching place details, hotels, and high-quality photos.
+-  **Firebase Firestore** — For persistent storage and retrieval of user trip data.
+-  **Firebase Authentication** — For secure user login and authentication via Google OAuth.
 
-- AI-Powered Travel Plans: Generate personalized travel itineraries and hotel recommendations using Google Generative AI.
-- Dynamic Place Information: Retrieve and display detailed information and photos of places and hotels using Google Places API.
-- User Authentication: Secure user login and authentication with Google OAuth.
-- Interactive UI: User-friendly and responsive interface designed with TailwindCSS.
-- Data Storage: Persistent storage of user trip data in Firebase Firestore.
-- Travel Itineraries: Detailed daily travel plans including attractions, timings, and ticket pricing.
-- Itenerary PDF - Export itinerary as a PDF.
-- Flight Search - Find the best flight options for your next adventure.
+<br>
+
+<h2 id="features">🚀 Features</h2>
+
+-  **AI-Powered Travel Plans** — Generate personalized travel itineraries and hotel recommendations using Google Generative AI.  
+-  **Dynamic Place Information** — View detailed information and photos of places and hotels using Google Places API.  
+-  **User Authentication** — Secure login with Google OAuth.  
+-  **Interactive UI** — Clean, user-friendly, and responsive interface designed with TailwindCSS.  
+-  **Data Storage** — Save and manage user trips in Firebase Firestore.  
+-  **Travel Itineraries** — Daily plans including attractions, timings, and ticket pricing.  
+-  **Estimated Cost Breakdown** — Get a clear budget overview with categorized costs (flights, hotels, meals, activities, and total).  
+-  **Itinerary PDF Export** — Download your trip plan and cost breakdown as a professional PDF.  
+-  **Flight Search** — Find the best flight options for your destination.  
+
+<br>
 
 <h2 id="pre">🗁 Prerequisites</h2>
 
-- Node.js & npm
-- Firebase Project: Set up a Firebase project and configure Firestore and Authentication. Obtain your Firebase configuration keys.
-- Google API Keys: Obtain API keys for Google Generative AI and Google Places API.
+-  **Node.js & npm** installed.  
+-  **Firebase Project** — Set up Firestore and Authentication. Obtain your Firebase configuration keys.  
+-  **Google API Keys** — For Google Generative AI (Gemini) and Google Places API.  
+
+

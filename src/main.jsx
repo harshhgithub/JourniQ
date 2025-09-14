@@ -11,32 +11,26 @@ import Viewtrip from './view-trip/[tripId]/index.jsx'
 import MyTrips from './my-trips/index.jsx'
 import { Analytics } from '@vercel/analytics/react'
 
-const router = createBrowserRouter([{
-  path: '/',
-  element: <App />
-},
-{
-  path:'/create-trip',
-  element: <CreateTrip />
-},
-{
-  path: '/view-trip/:tripId',
-  element: <Viewtrip />
-},
-{
-  path: '/my-trips',
-  element: <MyTrips />
-}
+// ✅ Import CurrencyProvider
+import { CurrencyProvider } from '@/context/CurrencyContext'
 
+const router = createBrowserRouter([
+  { path: '/', element: <App /> },
+  { path: '/create-trip', element: <CreateTrip /> },
+  { path: '/view-trip/:tripId', element: <Viewtrip /> },
+  { path: '/my-trips', element: <MyTrips /> }
 ])
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_AUTH_CLIENT_ID}>
-      <Header />
-      <Toaster/>
-      <RouterProvider router={router}/>
-      <Analytics />
+      {/* ✅ Wrap everything inside CurrencyProvider */}
+      <CurrencyProvider>
+        <Header />
+        <Toaster />
+        <RouterProvider router={router} />
+        <Analytics />
+      </CurrencyProvider>
     </GoogleOAuthProvider>
   </React.StrictMode>,
 )

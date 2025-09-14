@@ -1,9 +1,11 @@
 import { GetPlaceDetails, PHOTO_REF_URL } from '@/service/GlobalApi';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useCurrency } from '@/context/CurrencyContext'; // ✅ added
 
 function HotelCardItem({ hotel }) {
   const [photoUrl, setPhotoUrl] = useState();
+  const { convert, currency } = useCurrency(); // ✅ added
 
   useEffect(() => {
     if (hotel) GetPlacePhoto();
@@ -21,6 +23,19 @@ function HotelCardItem({ hotel }) {
       setPhotoUrl(PhotoUrl);
     });
   };
+
+  // ✅ Clean numeric value from hotel.price
+  let basePrice = 0;
+  if (hotel?.price) {
+    const match = hotel.price.match(/[\d,.]+/); // grab numbers only
+    if (match) {
+      basePrice = parseFloat(match[0].replace(/,/g, "")); // remove commas
+    }
+  }
+
+  // ✅ Convert only if valid number
+  const convertedPrice =
+    basePrice > 0 ? convert(basePrice, "USD", currency) : null;
 
   return (
     <Link
@@ -59,7 +74,10 @@ function HotelCardItem({ hotel }) {
 
           <div className="flex justify-between items-center mt-4">
             <span className="px-3 py-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 rounded-full text-xs font-medium">
-              💰 {hotel?.price || 'N/A'}
+              💰{" "}
+              {convertedPrice
+                ? `${convertedPrice} ${currency}`
+                : hotel?.price || "N/A"}
             </span>
           </div>
         </div>

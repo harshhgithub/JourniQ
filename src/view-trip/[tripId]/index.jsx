@@ -10,6 +10,8 @@ import Footer from '../components/Footer';
 import DownloadPDF from '../components/DownloadPdf';
 import FlightRecommendations from '../components/FlightRecommendations';
 import CostBreakdown from '../components/CostBreakdown';
+import { CurrencyProvider } from '@/context/CurrencyContext';
+import CurrencySelector from '../components/CurrencySelector';
 
 function Viewtrip() {
   const { tripId } = useParams();
@@ -41,7 +43,12 @@ function Viewtrip() {
   console.log("Trip data from Firestore:", trip);
 
   return (
+    <CurrencyProvider>
     <div className="px-5 sm:px-10 md:px-16 lg:px-28 xl:px-40 py-12 space-y-16">
+
+      {/* Currency Selector */}
+      <CurrencySelector />
+
       {/* Trip Overview / Hero */}
       <section>
         <InfoSection trip={trip} />
@@ -73,6 +80,7 @@ function Viewtrip() {
   </section>
 )}
 
+
       {/* Flight Recommendations Section */}
       <section className="bg-neutral-50 dark:bg-neutral-900 rounded-2xl shadow-sm border border-neutral-200 dark:border-neutral-800 p-6 sm:p-10">
         <h2 className="text-2xl font-semibold text-neutral-800 dark:text-neutral-100 mb-6">
@@ -88,6 +96,7 @@ function Viewtrip() {
       {/* Footer */}
       <Footer trip={trip} />
     </div>
+    </CurrencyProvider>
   );
 }
 

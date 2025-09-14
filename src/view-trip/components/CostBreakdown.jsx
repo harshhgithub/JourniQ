@@ -1,6 +1,9 @@
 import React from "react";
+import { useCurrency } from "@/context/CurrencyContext"; // ✅ added
 
 function CostBreakdown({ cost }) {
+  const { convert, currency } = useCurrency(); // ✅ added
+
   if (!cost) return null;
 
   let parsedCost = cost;
@@ -25,6 +28,21 @@ function CostBreakdown({ cost }) {
       .replace(/_/g, " ")
       .replace(/\b\w/g, (char) => char.toUpperCase());
 
+  // ✅ Parse and convert cost values
+  const formatValue = (value) => {
+    if (typeof value === "number") {
+      return `${convert(value)} ${currency}`;
+    }
+    if (typeof value === "string") {
+      const match = value.match(/\d+(\.\d+)?/); // extract number
+      if (match) {
+        return `${convert(parseFloat(match[0]))} ${currency}`;
+      }
+      return value; // fallback if no number
+    }
+    return value;
+  };
+
   return (
     <div className="space-y-5">
       {/* Breakdown items */}
@@ -39,7 +57,7 @@ function CostBreakdown({ cost }) {
                 {formatKey(key)}
               </span>
               <span className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
-                {value}
+                {formatValue(value)}
               </span>
             </div>
           </div>
@@ -51,7 +69,7 @@ function CostBreakdown({ cost }) {
         <div className="p-6 rounded-2xl bg-blue-600 text-white shadow-md">
           <div className="flex justify-between items-center text-xl font-bold">
             <span>{formatKey(totalEntry[0])}</span>
-            <span>{totalEntry[1]}</span>
+            <span>{formatValue(totalEntry[1])}</span>
           </div>
         </div>
       )}
@@ -60,4 +78,5 @@ function CostBreakdown({ cost }) {
 }
 
 export default CostBreakdown;
+
 

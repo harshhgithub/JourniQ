@@ -31,7 +31,7 @@ Always return ONLY valid JSON in this format:
     {
       "name": "Hotel Name",
       "address": "Address",
-      "price": "Price",
+      "price": "Price in USD",
       "image_url": "Image",
       "geo_coordinates": "lat,long",
       "rating": "X.X stars",
@@ -45,7 +45,7 @@ Always return ONLY valid JSON in this format:
         {
           "place": "Attraction Name",
           "details": "Short description",
-          "ticket_pricing": "Entry fee or 'Free'"
+          "ticket_pricing": "Entry fee in USD or 'Free'"
         }
       ]
     },
@@ -59,11 +59,11 @@ Always return ONLY valid JSON in this format:
     }
   ],
   "cost_breakdown": {
-    "flights": "Approx cost in USD or INR",
-    "hotel": "Approx cost in USD or INR",
-    "meals": "Approx cost in USD or INR",
-    "activities": "Approx cost in USD or INR",
-    "total": "Sum of all in same currency"
+    "flights": "Approx cost in USD",
+    "hotel": "Approx cost in USD",
+    "meals": "Approx cost in USD",
+    "activities": "Approx cost in USD",
+    "total": "Sum of all in USD"
   }
 }
 
@@ -72,6 +72,7 @@ Always return ONLY valid JSON in this format:
 - Each day must include at least 3 time slots: morning, afternoon, evening.
 - Every plan item MUST have "ticket_pricing" (even if it's "Free").
 - Always provide a realistic cost_breakdown based on budget type (cheap, moderate, luxury).
+- 🚨 All costs MUST be in USD only. Do not use INR, EUR, ₹, or other currencies.
 - No markdown, no commentary. Pure JSON only.`,
         },
       ],

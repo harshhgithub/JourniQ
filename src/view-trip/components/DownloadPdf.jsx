@@ -1,7 +1,24 @@
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { useCurrency } from "@/context/CurrencyContext";
 
 function DownloadPDF({ trip }) {
+  const { currency, convert } = useCurrency();
+
+  // ✅ Helper: simple number + currency code (no long formatting)
+  const safeConvert = (value) => {
+    if (!value) return "N/A";
+
+    const match = String(value).replace(/[^0-9.]/g, "");
+    const num = parseFloat(match);
+
+    if (isNaN(num)) return value;
+
+    const converted = convert(num);
+
+    return `${converted} ${currency}`; // simple short format
+  };
+
   const generatePDF = () => {
     const doc = new jsPDF();
 
@@ -26,7 +43,7 @@ function DownloadPDF({ trip }) {
     doc.text(`Destination: ${destination}`, 14, 30);
     doc.text(`Duration: ${days} Days`, 14, 38);
 
-    let yPos = 50; // starting Y position
+    let yPos = 50;
 
     // ✅ Cost Breakdown Section
     if (trip?.tripData?.cost_breakdown) {
@@ -34,45 +51,39 @@ function DownloadPDF({ trip }) {
       doc.text("Estimated Cost Breakdown", 14, yPos);
 
       const costData = trip.tripData.cost_breakdown;
-
-      // Separate total
       const totalValue = costData.total || costData.Total || null;
       const otherCosts = Object.entries(costData).filter(
         ([key]) => key.toLowerCase() !== "total"
       );
 
-      // Regular costs table
       autoTable(doc, {
-        head: [["Category", "Estimated Cost"]],
+        head: [["Category", `Estimated Cost (${currency})`]],
         body: otherCosts.map(([key, value]) => [
           key.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
-          value,
+          safeConvert(value),
         ]),
         startY: yPos + 5,
         theme: "grid",
         styles: { fontSize: 10 },
       });
 
-      // Position after costs table
       yPos = doc.lastAutoTable.finalY + 5;
 
-      // Highlighted Total row
       if (totalValue) {
         autoTable(doc, {
-          body: [["Total", totalValue]],
+          body: [["Total", safeConvert(totalValue)]],
           startY: yPos,
           theme: "grid",
           styles: { fontSize: 12, halign: "right" },
           columnStyles: {
-            0: { fontStyle: "bold", fillColor: [200, 220, 255] }, // Category col
-            1: { fontStyle: "bold", fillColor: [200, 220, 255] }, // Value col
+            0: { fontStyle: "bold", fillColor: [200, 220, 255] },
+            1: { fontStyle: "bold", fillColor: [200, 220, 255] },
           },
         });
 
         yPos = doc.lastAutoTable.finalY + 15;
       }
     }
-
 
     // ✅ Itinerary Section
     trip?.tripData?.itinerary?.forEach((day, i) => {
@@ -83,11 +94,11 @@ function DownloadPDF({ trip }) {
         day.plan?.map((p) => [
           p.place || "-",
           p.details || "-",
-          p.ticket_pricing || "-",
+          safeConvert(p.ticket_pricing),
         ]) || [];
 
       autoTable(doc, {
-        head: [["Place", "Details", "Ticket"]],
+        head: [["Place", "Details", `Ticket (${currency})`]],
         body: rows,
         startY: yPos + 5,
         theme: "grid",

@@ -90,7 +90,7 @@ function Viewtrip() {
           {/* Daily Plan */}
           <section className="bg-white dark:bg-neutral-900 rounded-2xl shadow-md border border-neutral-200 dark:border-neutral-800 p-6 space-y-6">
             <h2 className="text-2xl font-bold text-neutral-800 dark:text-neutral-100">
-              Daily Plan
+            Travel Plan
             </h2>
             <PlacesToVisit trip={trip} />
           </section>

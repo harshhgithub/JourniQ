@@ -1,68 +1,90 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { GetPlaceDetails, PHOTO_REF_URL } from '@/service/GlobalApi';
-import { useCurrency } from '@/context/CurrencyContext'; // ✅ added
+import React, { useEffect, useState } from "react"
+import { Link } from "react-router-dom"
+import { GetPlaceDetails, PHOTO_REF_URL } from "@/service/GlobalApi"
+import { useCurrency } from "@/context/CurrencyContext"
+import { Info, MapPin, Landmark } from "lucide-react" // ✅ replaced Ticket with Landmark
 
 function PlaceCardItem({ place }) {
-  const [photoUrl, setPhotoUrl] = useState();
-  const { convert, currency } = useCurrency(); // ✅ added
+  const [photoUrl, setPhotoUrl] = useState()
+  const { convert, currency } = useCurrency()
 
   useEffect(() => {
-    place && GetPlacePhoto();
-  }, [place]);
+    place && GetPlacePhoto()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [place])
 
   const GetPlacePhoto = async () => {
-    const data = {
-      textQuery: place?.place,
-    };
+    const data = { textQuery: place?.place }
     await GetPlaceDetails(data).then((resp) => {
-      const PhotoUrl = PHOTO_REF_URL.replace(
-        '{NAME}',
-        resp.data.places[0].photos[3].name
-      );
-      setPhotoUrl(PhotoUrl);
-    });
-  };
+      if (resp?.data?.places?.[0]?.photos?.[3]?.name) {
+        const PhotoUrl = PHOTO_REF_URL.replace(
+          "{NAME}",
+          resp.data.places[0].photos[3].name
+        )
+        setPhotoUrl(PhotoUrl)
+      }
+    })
+  }
 
-  // ✅ Parse ticket pricing safely
+  // ✅ Safe ticket pricing parser
   const parsePrice = (priceStr) => {
-    if (!priceStr) return null;
+    if (!priceStr) return null
+    const match = priceStr.toString().match(/\d+(\.\d+)?/)
 
-    // Extract digits from something like "₹500" or "Ticket: 20 EUR"
-    const match = priceStr.toString().match(/\d+(\.\d+)?/);
-    if (match) {
-      return parseFloat(match[0]);
-    }
-    return null; // no number found
-  };
+    return match ? parseFloat(match[0]) : null
+  }
 
-  const rawPrice = parsePrice(place?.ticket_pricing);
+  const rawPrice = parsePrice(place?.ticket_pricing)
   const formattedTicketPrice = rawPrice
     ? `${convert(rawPrice)} ${currency}`
-    : place?.ticket_pricing || 'N/A'; // fallback to original string if no number
+    : place?.ticket_pricing || "N/A"
 
   return (
     <Link
-      to={'https://www.google.com/maps/search/?api=1&query=' + place?.place}
+      to={`https://www.google.com/maps/search/?api=1&query=${place?.place}`}
       target="_blank"
+      rel="noopener noreferrer"
     >
-      <div className="shadow-sm border rounded-xl p-3 mt-2 flex gap-5 hover:scale-105 hover:shadow-md cursor-pointer transition-all">
-        <img
-          src={photoUrl ? photoUrl : '/placeholder.jpg'}
-          alt=""
-          className="w-[130px] h-[130px] rounded-xl object-cover"
-        />
-        <div>
-          <h2 className="font-bold text-lg">{place.place}</h2>
-          <p className="text-sm text-gray-500">{place.details}</p>
+      <div className="group flex gap-4 p-4 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 shadow-sm hover:shadow-lg hover:border-blue-400 dark:hover:border-blue-500 transition-all duration-300 cursor-pointer">
+        {/* Image */}
+        <div className="flex-shrink-0">
+          <img
+            src={photoUrl || "/placeholder.jpg"}
+            alt={place?.place}
+            className="w-32 h-32 rounded-xl object-cover group-hover:scale-105 transition-transform duration-300"
+          />
+        </div>
 
-          <h2 className="text-xs font-medium mt-2 mb-2">
-            🏷️ Ticket: {formattedTicketPrice}
+        {/* Content */}
+        <div className="flex flex-col justify-between flex-1 overflow-hidden">
+          {/* Title */}
+          <h2 className="font-semibold text-lg text-neutral-900 dark:text-neutral-100 truncate">
+            {place.place}
           </h2>
+
+          {/* Description */}
+          <p className="text-sm text-neutral-600 dark:text-neutral-400 line-clamp-2 flex items-start gap-1">
+            <Info className="h-4 w-4 text-blue-500 flex-shrink-0 mt-0.5" />
+            {place.details || "No description available."}
+          </p>
+
+          {/* Pricing */}
+          <div className="flex items-center gap-2 text-sm font-medium mt-2">
+            <Landmark className="h-4 w-4 text-emerald-500 dark:text-emerald-400" />
+            <span className="text-neutral-700 dark:text-neutral-300">
+              {formattedTicketPrice}
+            </span>
+          </div>
+
+          {/* Google Maps CTA */}
+          <div className="flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400 font-medium mt-2 group-hover:underline">
+            <MapPin className="h-4 w-4" />
+            View on Maps
+          </div>
         </div>
       </div>
     </Link>
-  );
+  )
 }
 
-export default PlaceCardItem;
+export default PlaceCardItem

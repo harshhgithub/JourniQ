@@ -64,7 +64,7 @@ function PlaceCardItem({ place }) {
 
           {/* Description */}
           <p className="text-sm text-neutral-600 dark:text-neutral-400 line-clamp-2 flex items-start gap-1">
-            <Info className="h-4 w-4 text-blue-500 flex-shrink-0 mt-0.5" />
+            
             {place.details || "No description available."}
           </p>
 

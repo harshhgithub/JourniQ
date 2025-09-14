@@ -87,9 +87,6 @@ const fetchAirports = async (keyword, field) => {
 
   return (
     <div className="p-6 border rounded-2xl shadow-md my-8 bg-white dark:bg-gray-900 dark:border-gray-700">
-      <h2 className="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-100">
-        Flight Recommendations
-      </h2>
 
       {/* Search Form */}
       <form

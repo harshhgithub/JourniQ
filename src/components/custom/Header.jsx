@@ -70,7 +70,7 @@ function Header() {
   }
 
   return (
-    <header className="w-full flex items-center justify-between shadow-sm p-4 md:px-40 border-b bg-background text-foreground">
+    <header className="sticky top-0 z-50 w-full flex items-center justify-between shadow-sm p-4 md:px-40 border-b bg-background/80 backdrop-blur-md text-foreground">
       {/* Logo */}
       <a href="/" className="flex items-center gap-3">
         <img src="/logo.png" alt="JourniQ Logo" className="h-8 w-8 md:h-10 md:w-10" />

@@ -1,14 +1,23 @@
 import React from "react";
-import { useCurrency } from "@/context/CurrencyContext"; // ✅ added
+import { useCurrency } from "@/context/CurrencyContext";
+import {
+  Hotel,
+  Utensils,
+  Bus,
+  Plane,
+  Ticket,
+  ShoppingBag,
+  Wallet,
+  PiggyBank,
+} from "lucide-react";
 
 function CostBreakdown({ cost }) {
-  const { convert, currency } = useCurrency(); // ✅ added
+  const { convert, currency } = useCurrency();
 
   if (!cost) return null;
 
   let parsedCost = cost;
 
-  // Parse JSON string if needed
   if (typeof cost === "string") {
     try {
       parsedCost = JSON.parse(cost);
@@ -22,55 +31,85 @@ function CostBreakdown({ cost }) {
   const totalEntry = entries.find(([key]) => key.toLowerCase() === "total");
   const otherEntries = entries.filter(([key]) => key.toLowerCase() !== "total");
 
-  // Format key (e.g. "hotel" → "Hotel")
   const formatKey = (key) =>
     key
       .replace(/_/g, " ")
       .replace(/\b\w/g, (char) => char.toUpperCase());
 
-  // ✅ Parse and convert cost values
   const formatValue = (value) => {
     if (typeof value === "number") {
       return `${convert(value)} ${currency}`;
     }
     if (typeof value === "string") {
-      const match = value.match(/\d+(\.\d+)?/); // extract number
+      const match = value.match(/\d+(\.\d+)?/);
       if (match) {
         return `${convert(parseFloat(match[0]))} ${currency}`;
       }
-      return value; // fallback if no number
+      return value;
     }
     return value;
   };
 
+  const iconMap = {
+    hotel: Hotel,
+    lodging: Hotel,
+    food: Utensils,
+    meals: Utensils,
+    transport: Bus,
+    bus: Bus,
+    flight: Plane,
+    flights: Plane,
+    ticket: Ticket,
+    shopping: ShoppingBag,
+    misc: Wallet,
+    other: PiggyBank,
+  };
+
+  const getIcon = (key) => {
+    const lower = key.toLowerCase();
+    for (const k in iconMap) {
+      if (lower.includes(k)) return iconMap[k];
+    }
+    return Wallet;
+  };
+
   return (
-    <div className="space-y-5">
-      {/* Breakdown items */}
-      <div className="grid gap-4 sm:grid-cols-2">
-        {otherEntries.map(([key, value]) => (
+    <div className="space-y-3">
+      {/* Breakdown rows */}
+      {otherEntries.map(([key, value]) => {
+        const Icon = getIcon(key);
+        return (
           <div
             key={key}
-            className="p-5 rounded-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 shadow-sm hover:shadow-md transition"
+            className="flex justify-between items-center border-b 
+                       border-neutral-200 dark:border-neutral-700 pb-2"
           >
-            <div className="flex items-center justify-between">
-              <span className="px-3 py-1 text-sm rounded-full font-medium bg-neutral-100 text-neutral-700 dark:bg-neutral-700 dark:text-neutral-200">
+            <div className="flex items-center gap-2">
+              <Icon className="w-4 h-4 text-neutral-500 dark:text-neutral-400" />
+              <span className="text-base font-medium text-neutral-700 dark:text-neutral-300">
                 {formatKey(key)}
               </span>
-              <span className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
-                {formatValue(value)}
-              </span>
             </div>
+            <span className="text-base font-semibold text-neutral-900 dark:text-neutral-100">
+              {formatValue(value)}
+            </span>
           </div>
-        ))}
-      </div>
+        );
+      })}
 
       {/* Total row */}
       {totalEntry && (
-        <div className="p-6 rounded-2xl bg-blue-600 text-white shadow-md">
-          <div className="flex justify-between items-center text-xl font-bold">
-            <span>{formatKey(totalEntry[0])}</span>
-            <span>{formatValue(totalEntry[1])}</span>
-          </div>
+        <div
+          className="flex justify-between items-center mt-6 px-4 py-3 rounded-lg 
+                     bg-blue-500/90 dark:bg-blue-600/90 shadow-sm"
+        >
+          <span className="flex items-center gap-2 text-base font-semibold text-white">
+            <Wallet className="w-4 h-4 text-white" />
+            {formatKey(totalEntry[0])}
+          </span>
+          <span className="text-lg font-semibold text-white">
+            {formatValue(totalEntry[1])}
+          </span>
         </div>
       )}
     </div>
@@ -78,5 +117,3 @@ function CostBreakdown({ cost }) {
 }
 
 export default CostBreakdown;
-
-

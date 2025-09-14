@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
 import { toast } from 'sonner';
+
 import InfoSection from '../components/InfoSection';
 import Hotels from '../components/Hotels';
 import PlacesToVisit from '../components/PlacesToVisit';
@@ -21,7 +22,11 @@ function Viewtrip() {
     if (tripId) GetTripData();
   }, [tripId]);
 
-  // fetch trip info from firebase
+  useEffect(() => {
+  window.scrollTo(0, 0);
+}, []);
+
+
   const GetTripData = async () => {
     const docRef = doc(db, 'AITrips', tripId);
     const docSnap = await getDoc(docRef);
@@ -40,62 +45,71 @@ function Viewtrip() {
       </div>
     );
   }
-  console.log("Trip data from Firestore:", trip);
 
   return (
     <CurrencyProvider>
-    <div className="px-5 sm:px-10 md:px-16 lg:px-28 xl:px-40 py-12 space-y-16">
+      <div className="flex flex-col lg:flex-row pt-24 px-4 sm:px-6 lg:px-12 xl:px-20 gap-10">
+        {/* LEFT SIDEBAR */}
+        <aside className="lg:w-1/3 lg:max-w-sm flex-shrink-0">
+          <div className="lg:sticky lg:top-24 flex flex-col gap-6 h-fit lg:h-[calc(100vh-6rem)]">
+            {/* Banner */}
+            <InfoSection trip={trip} />
 
-      {/* Currency Selector */}
-      <CurrencySelector />
+            {/* Cost breakdown */}
+            {trip.tripData?.cost_breakdown && (
+              <section className="bg-white dark:bg-neutral-900 rounded-2xl shadow-md border border-neutral-200 dark:border-neutral-800 p-6 space-y-5">
+                <div className="flex justify-between items-center">
+                  <h2 className="text-lg font-semibold text-neutral-800 dark:text-neutral-100">
+                    Estimated Cost
+                  </h2>
+                  <CurrencySelector />
+                </div>
+                <CostBreakdown cost={trip.tripData.cost_breakdown} />
+              </section>
+            )}
 
-      {/* Trip Overview / Hero */}
-      <section>
-        <InfoSection trip={trip} />
-      </section>
+            {/* Download PDF */}
+            <div>
+              <DownloadPDF trip={trip} />
+            </div>
+            {/* Small spacer below footer */}
+          <div className="h-5" />
+          </div>
+        </aside>
 
-      {/* Hotels Section */}
-      <section className="bg-neutral-50 dark:bg-neutral-900 rounded-2xl shadow-sm border border-neutral-200 dark:border-neutral-800 p-6 sm:p-10">
-        <h2 className="text-2xl font-semibold text-neutral-800 dark:text-neutral-100 mb-6">
-          Recommended Hotels
-        </h2>
-        <Hotels trip={trip} />
-      </section>
+        {/* RIGHT CONTENT */}
+        <main className="flex-1 space-y-10">
+          {/* Hotels */}
+          <section className="bg-white dark:bg-neutral-900 rounded-2xl shadow-md border border-neutral-200 dark:border-neutral-800 p-6 space-y-6">
+            <h2 className="text-2xl font-bold text-neutral-800 dark:text-neutral-100">
+              Recommended Hotels
+            </h2>
+            <Hotels trip={trip} />
+          </section>
 
-      {/* Daily Plan Section */}
-      <section className="bg-neutral-50 dark:bg-neutral-900 rounded-2xl shadow-sm border border-neutral-200 dark:border-neutral-800 p-6 sm:p-10">
-        <h2 className="text-2xl font-semibold text-neutral-800 dark:text-neutral-100 mb-6">
-          Daily Plan
-        </h2>
-        <PlacesToVisit trip={trip} />
-      </section>
+          {/* Daily Plan */}
+          <section className="bg-white dark:bg-neutral-900 rounded-2xl shadow-md border border-neutral-200 dark:border-neutral-800 p-6 space-y-6">
+            <h2 className="text-2xl font-bold text-neutral-800 dark:text-neutral-100">
+              Daily Plan
+            </h2>
+            <PlacesToVisit trip={trip} />
+          </section>
 
-      {/* ✅ Cost Breakdown Section */}
-      {trip.tripData?.cost_breakdown && (
-  <section className="bg-neutral-50 dark:bg-neutral-900 rounded-2xl shadow-sm border border-neutral-200 dark:border-neutral-800 p-6 sm:p-10">
-    <h2 className="text-2xl font-semibold text-neutral-800 dark:text-neutral-100 mb-6">
-      Estimated Cost Breakdown
-    </h2>
-    <CostBreakdown cost={trip.tripData.cost_breakdown} />
-  </section>
-)}
+          {/* Flights */}
+          <section className="bg-white dark:bg-neutral-900 rounded-2xl shadow-md border border-neutral-200 dark:border-neutral-800 p-6 space-y-6">
+            <h2 className="text-2xl font-bold text-neutral-800 dark:text-neutral-100">
+              Search Flights
+            </h2>
+            <FlightRecommendations trip={trip} />
+          </section>
 
+          {/* Footer */}
+          <Footer trip={trip} />
 
-      {/* Flight Recommendations Section */}
-      <section className="bg-neutral-50 dark:bg-neutral-900 rounded-2xl shadow-sm border border-neutral-200 dark:border-neutral-800 p-6 sm:p-10">
-        <h2 className="text-2xl font-semibold text-neutral-800 dark:text-neutral-100 mb-6">
-          Search Flights
-        </h2>
-        <FlightRecommendations trip={trip} />
-      </section>
-
-
-      {/* PDF - Export Button */}
-      <DownloadPDF trip={trip} />
-
-      {/* Footer */}
-      <Footer trip={trip} />
-    </div>
+          {/* Small spacer below footer */}
+          <div className="h-2" />
+        </main>
+      </div>
     </CurrencyProvider>
   );
 }

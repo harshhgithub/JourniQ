@@ -13,6 +13,7 @@ import FlightRecommendations from '../components/FlightRecommendations';
 import CostBreakdown from '../components/CostBreakdown';
 import { CurrencyProvider } from '@/context/CurrencyContext';
 import CurrencySelector from '../components/CurrencySelector';
+import ExploreMore from '../components/ExploreMore';
 
 function Viewtrip() {
   const { tripId } = useParams();
@@ -94,6 +95,14 @@ function Viewtrip() {
             </h2>
             <PlacesToVisit trip={trip} />
           </section>
+
+          {/* Explore More section */}
+          <section >
+           <ExploreMore trip={trip} />
+           </section>
+
+
+
 
           {/* Flights */}
           <section className="bg-white dark:bg-neutral-900 rounded-2xl shadow-md border border-neutral-200 dark:border-neutral-800 p-6 space-y-6">

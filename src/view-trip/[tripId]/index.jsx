@@ -14,6 +14,7 @@ import CostBreakdown from '../components/CostBreakdown';
 import { CurrencyProvider } from '@/context/CurrencyContext';
 import CurrencySelector from '../components/CurrencySelector';
 import ExploreMore from '../components/ExploreMore';
+import WeatherForecast from '../components/WeatherForecast';
 
 function Viewtrip() {
   const { tripId } = useParams();
@@ -100,6 +101,8 @@ function Viewtrip() {
           <section >
            <ExploreMore trip={trip} />
            </section>
+
+           <WeatherForecast trip={trip}/>
 
 
 

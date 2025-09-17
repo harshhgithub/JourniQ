@@ -30,11 +30,13 @@ function ExploreMore({ trip }) {
     return null;
   };
 
-  const fetchPlaces = async (lat, lng) => {
+  const fetchPlaces = async (lat, lng, locationName) => {
     try {
       setLoading(true);
       const res = await fetch(
-        `/api/places?lat=${lat}&lng=${lng}&radius=1500&type=tourist_attraction`
+        `/api/places?lat=${lat}&lng=${lng}&radius=5000&locationName=${encodeURIComponent(
+          locationName
+        )}`
       );
       const data = await res.json();
       if (data.results) {
@@ -56,7 +58,7 @@ function ExploreMore({ trip }) {
           trip.userSelection.location.value?.description ||
           "";
         const coords = await getCoordinates(placeId || placeName);
-        if (coords) fetchPlaces(coords.lat, coords.lng);
+        if (coords) fetchPlaces(coords.lat, coords.lng, placeName);
       }
     };
     loadPlaces();
@@ -115,7 +117,11 @@ function ExploreMore({ trip }) {
               href={mapsUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="block bg-neutral-100 dark:bg-neutral-800 rounded-xl shadow-sm border border-neutral-200 dark:border-neutral-700 overflow-hidden hover:shadow-md transition"
+              className="block bg-white dark:bg-neutral-900 
+                         rounded-xl shadow-sm border border-neutral-200 dark:border-neutral-700 
+                         overflow-hidden transition 
+                         hover:shadow-md hover:bg-neutral-50 dark:hover:bg-neutral-800 
+                         hover:ring-1 hover:ring-neutral-300 dark:hover:ring-neutral-600"
             >
               {place.photos?.[0] ? (
                 <img
@@ -126,8 +132,8 @@ function ExploreMore({ trip }) {
                   className="w-full h-40 object-cover"
                 />
               ) : (
-                <div className="w-full h-40 bg-gray-300 flex items-center justify-center text-gray-600 text-sm">
-                  No Image
+                <div className="w-full h-40 flex items-center justify-center text-gray-400 text-sm bg-neutral-100 dark:bg-neutral-800">
+                  📍 No Image Available
                 </div>
               )}
               <div className="p-3">

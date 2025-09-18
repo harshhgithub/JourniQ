@@ -28,15 +28,17 @@
 
 <h2 id="features">🚀 Features</h2>
 
--  **AI-Powered Travel Plans** — Generate personalized travel itineraries and hotel recommendations using Google Generative AI.  
--  **Dynamic Place Information** — View detailed information and photos of places and hotels using Google Places API.  
--  **User Authentication** — Secure login with Google OAuth.  
--  **Interactive UI** — Clean, user-friendly, and responsive interface designed with TailwindCSS.  
--  **Data Storage** — Save and manage user trips in Firebase Firestore.  
--  **Travel Itineraries** — Daily plans including attractions, timings, and ticket pricing.  
--  **Estimated Cost Breakdown** — Get a clear budget overview with categorized costs (flights, hotels, meals, activities, and total).  
--  **Itinerary PDF Export** — Download your trip plan and cost breakdown as a professional PDF.  
--  **Flight Search** — Find the best flight options for your destination.  
+- **AI-Powered Travel Plans** — Generate personalized travel itineraries and hotel recommendations using Google Generative AI.  
+- **Dynamic Place Information** — View detailed information and photos of places and hotels using Google Places API.  
+- **Explore More Nearby** — Discover nearby attractions and points of interest around your chosen destination.  
+- **Weather Forecast Integration** — Get a 7-day weather forecast to plan your activities better.  
+- **User Authentication** — Secure login with Google OAuth.  
+- **Interactive UI** — Clean, user-friendly, and responsive interface designed with TailwindCSS.  
+- **Data Storage** — Save and manage user trips in Firebase Firestore.  
+- **Travel Itineraries** — Daily plans including attractions, timings, and ticket pricing.  
+- **Estimated Cost Breakdown** — Get a clear budget overview with categorized costs (flights, hotels, meals, activities, and total).  
+- **Itinerary PDF Export** — Download your trip plan and cost breakdown as a professional PDF.  
+- **Flight Search** — Find the best flight options for your destination.  
 
 <br>
 

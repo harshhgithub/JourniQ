@@ -5,7 +5,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { googleLogout, useGoogleLogin } from '@react-oauth/google'
 import {
   Dialog,
   DialogContent,
@@ -13,13 +12,13 @@ import {
   DialogHeader,
 } from "@/components/ui/dialog"
 import { FcGoogle } from "react-icons/fc"
-import axios from 'axios'
-import { Sun, Moon } from 'lucide-react' // Optional: icon library
+import { Sun, Moon } from 'lucide-react'
+import { auth, googleProvider } from "@/service/firebaseConfig"
+import { signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth"
 
+// ✅ Dark mode toggle (unchanged)
 function DarkModeToggle() {
-  const [darkMode, setDarkMode] = useState(
-    localStorage.getItem("theme") === "dark"
-  )
+  const [darkMode, setDarkMode] = useState(localStorage.getItem("theme") === "dark")
 
   useEffect(() => {
     if (darkMode) {
@@ -43,30 +42,35 @@ function DarkModeToggle() {
 }
 
 function Header() {
-  const user = JSON.parse(localStorage.getItem('user'))
+  const [user, setUser] = useState(null)
   const [openDialog, setOpenDialog] = useState(false)
 
-  const login = useGoogleLogin({
-    onSuccess: (res) => GetUserProfile(res),
-    onError: (error) => console.log(error),
-  })
+  // ✅ Track Firebase Auth state
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser)
+    })
+    return () => unsubscribe()
+  }, [])
 
-  const GetUserProfile = (tokenInfo) => {
-    axios
-      .get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${tokenInfo.access_token}`, {
-        headers: {
-          Authorization: `Bearer ${tokenInfo.access_token}`,
-          Accept: 'application/json',
-        },
-      })
-      .then((resp) => {
-        localStorage.setItem('user', JSON.stringify(resp.data))
-        setOpenDialog(false)
-        window.location.reload()
-      })
-      .catch((error) => {
-        console.error("Error fetching user profile: ", error)
-      })
+  // ✅ Login with Firebase Google Auth
+  const handleLogin = async () => {
+    try {
+      await signInWithPopup(auth, googleProvider)
+      setOpenDialog(false)
+    } catch (error) {
+      console.error("Error during sign-in:", error)
+    }
+  }
+
+  // ✅ Logout
+  const handleLogout = async () => {
+    try {
+      await signOut(auth)
+      setUser(null)
+    } catch (error) {
+      console.error("Error during logout:", error)
+    }
   }
 
   return (
@@ -98,18 +102,14 @@ function Header() {
             <Popover>
               <PopoverTrigger>
                 <img
-                  src={user?.picture}
-                  alt={`${user?.name}'s avatar`}
+                  src={user?.photoURL}
+                  alt={`${user?.displayName || "User"}'s avatar`}
                   className="h-9 w-9 rounded-full border"
                 />
               </PopoverTrigger>
               <PopoverContent className="text-sm font-medium cursor-pointer">
                 <h2
-                  onClick={() => {
-                    googleLogout()
-                    localStorage.clear()
-                    window.location.reload()
-                  }}
+                  onClick={handleLogout}
                   className="hover:text-destructive"
                 >
                   Logout
@@ -138,7 +138,7 @@ function Header() {
                 Plan your journeys, save your trips, and explore the world!
               </p>
               <Button
-                onClick={login}
+                onClick={handleLogin}
                 className="w-full mt-6 flex gap-3 items-center justify-center"
               >
                 <FcGoogle className="h-6 w-6" />
@@ -153,3 +153,4 @@ function Header() {
 }
 
 export default Header
+

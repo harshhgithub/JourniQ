@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
+import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getAnalytics } from "firebase/analytics";
 
 const firebaseConfig = {
@@ -13,11 +13,20 @@ const firebaseConfig = {
   measurementId: "G-EJB0JSL3F2"
 };
 
+// ✅ Initialize Firebase
 export const app = initializeApp(firebaseConfig);
+
+// ✅ Initialize Firestore & Auth
 export const db = getFirestore(app);
 export const auth = getAuth(app);
 
-// ✅ Only initialize analytics if available (to avoid SSR issues in Vercel)
+// ✅ Add Google Auth Provider (this fixes your import error)
+export const googleProvider = new GoogleAuthProvider();
+googleProvider.setCustomParameters({
+  prompt: "select_account", // optional: always ask user to pick account
+});
+
+// ✅ Optional: Analytics (only in browser)
 export let analytics;
 if (typeof window !== "undefined") {
   analytics = getAnalytics(app);

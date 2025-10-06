@@ -133,6 +133,58 @@ function CreateTrip() {
                 handleInputChange('location', v); 
               },
               placeholder: "Search for a city, landmark, or destination...",
+              styles: {
+        control: (provided, state) => ({
+          ...provided,
+          backgroundColor: state.isFocused 
+            ? (document.documentElement.classList.contains("dark") ? "#111827" : "#f9fafb") 
+            : (document.documentElement.classList.contains("dark") ? "#1f2937" : "#ffffff"),
+          borderRadius: "0.75rem",
+          border: state.isFocused ? "2px solid #2563eb" : "1px solid #d1d5db",
+          boxShadow: "none",
+          padding: "6px 8px",
+          transition: "all 0.2s ease",
+          cursor: "text"
+        }),
+        input: (provided) => ({
+          ...provided,
+          color: document.documentElement.classList.contains("dark") ? "#f9fafb" : "#111827",
+          fontSize: "1rem",
+        }),
+        singleValue: (provided) => ({
+          ...provided,
+          color: document.documentElement.classList.contains("dark") ? "#f9fafb" : "#111827",
+        }),
+        menu: (provided) => ({
+          ...provided,
+          backgroundColor: document.documentElement.classList.contains("dark") ? "#1f2937" : "#ffffff",
+          borderRadius: "0.75rem",
+          marginTop: "6px",
+          padding: "6px",
+          boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+          zIndex: 50,
+        }),
+        
+        option: (provided, state) => {
+          const isDark = document.documentElement.classList.contains("dark");
+          return {
+            ...provided,
+            backgroundColor: state.isFocused 
+              ? (isDark ? "#2563eb" : "#e5f0ff") 
+              : "transparent",
+            color: state.isFocused 
+              ? (isDark ? "#ffffff" : "#111827") // ✅ fix: dark text in light mode hover
+              : (isDark ? "#d1d5db" : "#374151"),
+            padding: "10px",
+            borderRadius: "0.5rem",
+            cursor: "pointer",
+          };
+        },
+        placeholder: (provided) => ({
+          ...provided,
+          color: document.documentElement.classList.contains("dark") ? "#9ca3af" : "#6b7280",
+        }),
+      },
             }}
           />
         </div>
